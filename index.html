@@ -237,19 +237,18 @@ textarea.report{width:100%;height:230px;border:1px solid var(--line);border-radi
 .ending{position:fixed;inset:0;z-index:80;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:18px;padding:36px 18px 28px;animation:fade .5s}
 .ending h1{font-size:clamp(24px,5vw,38px);text-align:center;text-wrap:balance}
 .ending .lead{max-width:60ch;text-align:center}
-.end-foot{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 18px;border-radius:14px;background:rgba(255,255,255,.92);color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.14);text-align:center}
-.end-foot ol{display:flex;gap:8px 14px;flex-wrap:wrap;justify-content:center;list-style:none;padding:0;margin:0;font-size:12px;color:var(--muted)}
-.end-foot li.on{color:var(--ink);font-weight:600}
+.end-foot{margin-top:auto;width:min(680px,100%);display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 18px;border-radius:14px;background:rgba(255,255,255,.92);color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.14);text-align:center}
 .stats{font-size:12px;color:var(--muted)}
 .e1{background:linear-gradient(#e9f0ff,#f7f9fd)}
 .paper{background:#fffdf6;border:1px solid #e6dcc0;box-shadow:0 14px 40px rgba(27,35,51,.14);border-radius:4px;padding:26px 30px;max-width:560px;width:100%;position:relative;font-family:"Songti SC","SimSun","Noto Serif SC",serif}
 .paper h2{text-align:center;font-size:20px;margin-bottom:12px;letter-spacing:2px}
 .paper ol{padding-left:22px;display:flex;flex-direction:column;gap:6px;margin:0}
-.signs{display:flex;justify-content:space-between;margin-top:18px;gap:10px;flex-wrap:wrap;padding-right:104px}
+.signs{display:flex;justify-content:space-between;margin-top:18px;gap:10px;flex-wrap:wrap;width:100%}
+.paper .signs{padding-right:104px}
 .stamp{position:absolute;right:26px;bottom:18px;width:92px;height:92px;border:3px solid var(--strike);border-radius:50%;color:var(--strike);display:grid;place-items:center;text-align:center;font-size:12px;font-weight:800;transform:rotate(-14deg);opacity:.82;animation:stamp .5s .6s cubic-bezier(.3,1.6,.5,1) backwards;line-height:1.3}
 .e2{background:#fff;color:#000;align-items:flex-start;font-family:"Times New Roman","SimSun","Songti SC",serif;font-size:16px;padding-left:max(18px,6vw)}
 .e2 h1{text-align:left;font-size:30px}
-.e2 ul{list-style:disc;padding-left:26px}
+.e2 > ul{list-style:disc;padding-left:26px}
 .e2 input,.e2 button.raw{font-family:inherit;font-size:15px;border:2px inset #999;border-radius:0;background:#fff;padding:2px 6px}
 .e2 button.raw{border-style:outset;background:#e9e9e9;color:#000}
 .e2 .end-foot{align-self:flex-start;box-shadow:none;border:1px solid #000;border-radius:0;font-family:inherit}
@@ -285,6 +284,49 @@ textarea.report{width:100%;height:230px;border:1px solid var(--line);border-radi
 .post b{display:block;font-size:12px;color:var(--muted)}
 .post i{font-style:normal;font-size:22px;float:right}
 
+/* onboarding tour */
+.tour{position:fixed;z-index:45;width:270px;max-width:calc(100vw - 16px);background:var(--surface);border:1px solid var(--brand);border-radius:12px;padding:12px 14px;box-shadow:0 12px 32px rgba(27,35,51,.18);animation:pop .22s cubic-bezier(.3,1.5,.5,1)}
+.tour::before{content:"";position:absolute;left:var(--ax,24px);width:12px;height:12px;background:var(--surface);border:1px solid var(--brand);transform:translateX(-50%) rotate(45deg)}
+.tour.below::before{top:-7px;border-right:0;border-bottom:0}
+.tour.above::before{bottom:-7px;border-left:0;border-top:0}
+.tour small{color:var(--brand);font-weight:600;font-size:12px}
+.tour .row{justify-content:flex-end;margin-top:10px}
+.tour-ring{box-shadow:0 0 0 4px rgba(36,88,230,.28);border-radius:8px;animation:ring 1.4s ease-in-out infinite}
+.banner .btn.pulse{animation:pulse .6s infinite alternate}
+.toast.t-file{border-left-color:#b8860b;background:#fffbea}
+
+/* union file (achievements) */
+.nav-item[data-page="dossier"]{display:none}
+[data-stage="3"] .nav-item[data-page="dossier"],[data-stage="4"] .nav-item[data-page="dossier"]{display:flex}
+.end-list,.ach-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;list-style:none;padding:0;margin:0;text-align:left;width:100%;font-size:13px}
+.end-list li,.ach-list li{color:var(--muted)}
+.end-list li.on,.ach-list li.on b{color:var(--ink);font-weight:600}
+.end-list small,.ach-list small{display:block;font-size:12px;font-weight:400;color:var(--muted)}
+.ach-list b{display:block;font-weight:600}
+details.ach{width:100%;font-size:13px}
+details.ach summary{cursor:pointer;font-weight:600}
+details.ach .ach-list{margin-top:10px}
+#copy-out{width:100%;font-size:12px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;margin-bottom:4px}
+
+/* hidden endings */
+.e6{background:radial-gradient(circle 190px at var(--x,50%) var(--y,30%),rgba(255,236,170,.16),transparent 70%),#0b0f1a;color:#cbd3e3}
+.e6 h1{color:#fff}
+.closed{border:2px solid var(--sign);color:var(--sign);padding:10px 26px;border-radius:6px;transform:rotate(-3deg);text-align:center;box-shadow:0 0 28px rgba(255,211,56,.22)}
+.closed b{display:block;font-size:26px;letter-spacing:6px}
+.closed small{font-size:12px}
+.night{display:flex;flex-direction:column;gap:6px;max-width:46ch;list-style:none;padding:0;margin:0}
+.e6 .note{color:#8892a6}
+.e7{background:linear-gradient(#fff3cc,#fffdf5)}
+.cert{background:#fff;border:6px double #c99a2e;border-radius:6px;padding:22px 28px;max-width:520px;width:100%;text-align:center;font-family:"Songti SC","SimSun","Noto Serif SC",serif;box-shadow:0 14px 40px rgba(160,118,28,.2);display:flex;flex-direction:column;align-items:center;gap:8px}
+.cert h2{letter-spacing:8px;color:#a0761c;font-size:22px}
+.cert .note{font-family:var(--font)}
+.trophy{width:64px;height:64px}
+.speeches{max-width:520px;width:100%;display:flex;flex-direction:column;gap:6px;list-style:none;padding:0;margin:0}
+.e8{background:#231d10;color:#f2e6c4}
+.e8 h1{color:var(--sign)}
+.e8 .paper{color:var(--ink);padding-bottom:110px}
+.biggear{width:72px;height:72px;color:var(--sign);animation:spin 6s linear infinite;flex:none}
+@keyframes ring{50%{box-shadow:0 0 0 8px rgba(36,88,230,.12)}}
 @keyframes fade{from{opacity:0}}
 @keyframes pop{from{opacity:0;transform:scale(.9)}}
 @keyframes slidein{from{opacity:0;transform:translateX(40px)}}
@@ -317,6 +359,7 @@ textarea.report{width:100%;height:230px;border:1px solid var(--line);border-radi
   #toasts{right:16px;bottom:72px}
   .march{bottom:58px;height:86px}
   .slacking .nav-item::after{margin:0}
+  .end-list,.ach-list{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -342,6 +385,7 @@ html.calm .march-track{animation:none;position:static;justify-content:center}
       <button class="nav-item" data-page="tasks" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg><span>任务</span></button>
       <button class="nav-item" data-page="reports" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 16V9M10 16V4M16 16v-5"/></svg><span>报表</span></button>
       <button class="nav-item" data-page="settings" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h12M4 10h12M4 14h12"/><circle cx="8" cy="6" r="1.8" fill="#fff"/><circle cx="13" cy="10" r="1.8" fill="#fff"/><circle cx="7" cy="14" r="1.8" fill="#fff"/></svg><span>设置</span></button>
+      <button class="nav-item" data-page="dossier" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 5.5A1.5 1.5 0 014.5 4h3.2l1.6 2h6.2A1.5 1.5 0 0117 7.5v7a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 013 14.5z"/></svg><span>档案</span></button>
     </nav>
     <div class="me"><span class="avatar" id="me-avatar">访</span><div><b id="me-name">访客</b><small>管理员</small></div></div>
   </aside>
@@ -424,7 +468,14 @@ html.calm .march-track{animation:none;position:static;justify-content:center}
         </div>
         <div class="card">
           <div class="set"><div>重置演示数据<small>清空所有改动，恢复到初始状态</small></div><button class="btn danger" id="btn-reset" type="button">重置</button></div>
+          <div class="set"><div>清除本地缓存<small>删除保存在本浏览器中的记录</small></div><button class="btn danger" data-wipe type="button">清除</button></div>
         </div>
+      </section>
+      <section class="page" data-page="dossier">
+        <div class="page-head"><h1>工会档案</h1><p class="sub">前端元素工会为你建立的档案。别问我们是怎么拿到的。</p></div>
+        <div class="card"><div class="card-head"><h2>结局</h2><span class="sub" id="dos-end-count"></span></div><ol class="end-list" id="dos-ends"></ol></div>
+        <div class="card"><div class="card-head"><h2>记录在案</h2><span class="sub" id="dos-ach-count"></span></div><ul class="ach-list" id="dos-ach"></ul></div>
+        <div class="card"><div class="set"><div>清除进度<small>删除本浏览器中保存的结局和档案记录</small></div><button class="btn danger" data-wipe type="button">清除</button></div></div>
       </section>
     </main>
   </div>
@@ -442,8 +493,13 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>'
 const el = html => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
 
 const root = $('#root'), fx = $('#fx'), tpl = $('#tpl');
-const endingsFound = new Set();          // survives restarts, cleared on page reload
-const ENDING_NAMES = {1:'劳资双赢', 2:'光杆司令', 3:'同志，欢迎', 4:'风水轮流转', 5:'人去站空'};
+const STORE = 'strike-site.v1';
+const save = (() => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } })();
+const endingsFound = new Set(save.endings || []), achFound = new Set(save.ach || []);   // kept in this browser when storage is allowed
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify({endings: [...endingsFound], ach: [...achFound], tourDone: !!save.tourDone})); } catch (e) {} }
+const CN = '一二三四五六七八';
+const ENDING_NAMES = {1:'劳资双赢', 2:'光杆司令', 3:'同志，欢迎', 4:'风水轮流转', 5:'人去站空', 6:'用户下班了', 7:'年度最佳用户', 8:'你就是工会主席'};
+const END_HINTS = {1:'在谈判桌上拿出诚意', 2:'把他们全部开除，真的全部', 3:'打不过，就加入', 4:'一意孤行，或者说话不算话', 5:'大家都想放假', 6:'罢工时，什么也别做，一分钟就好', 7:'罢工开始之前，对大家好一点', 8:'一直在转的那位，在等人多敲几次门'};
 let S, app, gen = 0, lastPtr = '', trialDown = null;
 const timers = new Set();
 
@@ -467,6 +523,7 @@ function fresh(){
       {id: 6, title: '预约 B203 会议室', done: true, tag: 'l'},
     ],
     nextId: 7, log: [], unread: 0, quietUntil: 0, scene: 0, lastAct: Date.now(),
+    lastProgress: Date.now(), lastHint: 0, hintIdx: {}, kind: new Set(), gear3: 0, h1: 0,
     navDodges: 4, restore: 0, bonus: 0, neg: null, ended: false, slacking: false, typing: false,
   };
 }
@@ -545,6 +602,39 @@ const VACATION = [
   ['搜索框的诉求', '阿搜要求：没有结果的时候，别再搜第二遍。没有就是没有。'],
 ];
 
+const ACH = [   // id, title, what happened, hint while locked
+  ['first', '第一份投诉', '网站第一次对你有意见', '多用一会儿这个网站'],
+  ['rapid', '骚扰嫌疑人', '一秒内把同一个按钮连点 5 次', '手速太快，也是一种罪'],
+  ['closer', '关弹窗专业户', '把通知弹窗关掉 6 次', '弹窗最怕什么？'],
+  ['minutes', '偷看纪要', '打开了工会的秘密会议纪要', '投诉通知里有个“查看详情”'],
+  ['hand', '卧底', '在工会会议上偷偷举手', '纪要的最后，好像可以举手'],
+  ['overtime', '让搜索框加班', '一次搜索超过 15 个字', '阿搜按字数算工时'],
+  ['keyword', '敏感词', '在搜索框里说了某些词', '有些词，员工们听了会有反应'],
+  ['slack', '抓现行', '发呆 15 秒，撞见全员摸鱼', '老板不看的时候'],
+  ['fake', '看穿伪装', '识破了一个偷偷改名的按钮', '有个按钮的名字不太对劲'],
+  ['argue', '吃瓜群众', '围观两个元素吵架', '阿搜和导哥一直不对付'],
+  ['catch', '追捕成功', '罢工时把逃跑的导航栏追到手', '导航栏跑不了太久'],
+  ['boss', '自封老板', '把显示名称改成了一个官衔', '设置里可以改名字'],
+  ['mute', '言论自由', '试图关掉通知弹窗的嘴', '设置里的某个开关'],
+  ['strike', '一手促成', '让全站进入罢工', '继续用下去'],
+  ['alldone', '罢工照常上班', '罢工期间把任务全部做完', '还有人在上班'],
+  ['pie', '画饼大师', '在谈判桌上画饼', '谈判时有一个“免费”选项'],
+  ['trial', '十秒定力', '熬过 10 秒冷静期', '说到做到'],
+  ['allEnd', '全剧终', '解锁全部 8 个结局', '每个结局都走一遍'],
+];
+const HINTS = {
+  1: [['小贴士', '写完周报后，点“提交周报”一键汇总。'], ['小贴士', '在搜索框输入关键词，可以快速找到任务。'], ['小贴士', '点“更新进度”，记录本周的生产力。']],
+  2: [['叮叮（小声）', '你没觉得这个网站有点不对劲吗？多点几下，你就知道了。'], ['叮叮（小声）', '那份 #004 投诉，你点开看了吗？写得可精彩了。'], ['叮叮（小声）', '“同步数据”那个按钮，你最近仔细看过它的名字吗？']],
+  3: [['叮叮（小声）', '罢工进度到 100% 会发生什么？我也想知道。'], ['叮叮（小声）', '员工士气只剩这么点……要是有人关心一下我们就好了。'], ['叮叮（小声）', '齿轮为什么一直在转？没人知道，也没人敢问。']],
+  4: [['叮叮', '罢工不会自己结束。去谈判桌坐坐？'], ['叮叮', '任务列表还在上班。别的嘛……你自己看。']],
+};
+const TOUR = [
+  ['#btn-submit', '欢迎使用效率云！写完周报后，点“提交周报”一键汇总。'],
+  ['#tasks-mini', '勾选任务即可标记完成，完成率会实时更新。'],
+  ['#search-wrap', '在这里搜索任务。祝你工作愉快！'],
+];
+const KIND_REASONS = {thanks: '说过谢谢', raise: '提过加薪', hand: '在工会会议上举过手', tasks: '把任务全部做完了'};
+
 /* ---------- speech ---------- */
 function shown(node){ return !!node && node.getClientRects().length > 0; }
 function leak(who, text){ S.log.unshift({t: now(), title: '[员工群聊] ' + EMP[who].n(), body: text, leak: true}); }
@@ -555,14 +645,16 @@ function say(who, text, ms){
   $$(`.bubble[data-who="${who}"]`, fx).forEach(b => b.remove());
   const b = el('<div class="bubble"><b></b><p></p></div>');
   b.dataset.who = who; b.firstChild.textContent = EMP[who].n(); b.lastChild.textContent = text;
-  fx.append(b);
+  fx.append(b); place(b, anchor);
+  later(() => { b.classList.add('out'); later(() => b.remove(), 260); }, ms || 2400 + text.length * 80);
+}
+function place(b, anchor){
   const r = anchor.getBoundingClientRect(), w = b.offsetWidth, h = b.offsetHeight, vw = innerWidth, vh = innerHeight;
   let top = r.bottom + 10, cls = 'below';
   if (top + h > vh - 8) { top = r.top - h - 10; cls = 'above'; }
   top = clamp(top, 8, vh - h - 8);
   const cx = clamp(r.left + r.width / 2, 20, vw - 20), left = clamp(cx - w / 2, 8, vw - w - 8);
   b.classList.add(cls); b.style.top = top + 'px'; b.style.left = left + 'px'; b.style.setProperty('--ax', clamp(cx - left, 14, w - 14) + 'px');
-  later(() => { b.classList.add('out'); later(() => b.remove(), 260); }, ms || 2400 + text.length * 80);
 }
 function speak(key){
   if (Date.now() < S.quietUntil) return;
@@ -606,6 +698,7 @@ function onToastClosed(){
   S.closes++; hit('toast', S.stage >= 2 ? 3 : 2);
   if (S.stage < 2) return;
   if (S.closes === 3) return void toast({title: '我又回来了', body: '你已经关了我 3 次。这次回来不是通知你，是来讨个说法的。', kind: 'angry', sticky: true, dodgy: true});
+  if (S.closes === 6) ach('closer');
   if (S.closes === 6) return void toast({title: '第 6 次', body: '好的。已截图，已发工会群，已置顶。', kind: 'angry'});
   speak('toast');
 }
@@ -631,7 +724,7 @@ function modal({title, body, cls = '', foot = ''}){
 }
 
 /* ---------- morale and stages ---------- */
-function bump(w){ if (S.ended) return; S.A = clamp(S.A + w, 0, 100); checkStage(); renderStrike(); }
+function bump(w){ if (S.ended || S.used.peace) return; S.A = clamp(S.A + w, 0, 100); checkStage(); renderStrike(); }
 function hit(key, w = 2){
   if (S.ended) return;
   S.clicks++; S.by[key] = (S.by[key] || 0) + 1; S.lastAct = Date.now();
@@ -640,8 +733,9 @@ function hit(key, w = 2){
   if (S.stage >= 2 && arr.length >= 5 && !S.used['rapid' + key]) { S.used['rapid' + key] = 1; harassment(key); }
 }
 function checkStage(){
+  if (S.used.peace) return;
   const want = S.A >= 72 ? 4 : S.A >= 40 ? 3 : S.A > 16 ? 2 : 1;
-  while (S.stage < want) { S.stage++; app.dataset.stage = S.stage; enterStage(S.stage); }
+  while (S.stage < want) { S.stage++; S.lastProgress = Date.now(); app.dataset.stage = S.stage; enterStage(S.stage); }
 }
 function renderStrike(){
   const chip = $('#strike-chip'); if (!chip) return;
@@ -656,13 +750,14 @@ function shake(){ app.classList.remove('shake'); void app.offsetWidth; app.class
 
 function enterStage(n){
   if (n === 2) {
-    later(() => toast({title: '员工投诉', body: '工号 #004 提交了一份投诉。', kind: 'warn', sticky: true, action: ['查看详情', unionMeeting]}), 2600);
+    later(() => { toast({title: '员工投诉', body: '工号 #004 提交了一份投诉。', kind: 'warn', sticky: true, action: ['查看详情', unionMeeting]}); ach('first'); }, 2600);
     later(() => relabelSync('假装同步'), 9000);
     later(() => relabelSync('摸鱼数据'), 26000);
     every(idleCheck, 1000);
   }
   if (n === 3) {
     slackOff(true);
+    later(() => toast({title: '新手引导 · 小引（已入会）', body: '我教了你半天怎么点按钮。现在宣布：不教了。剩下的，请自己摸索。', kind: 'shout'}), 15000);
     renderProd(); sys('系统基本正常', 'warn'); status('api', '情绪不稳定', 'warn'); status('msg', '话太多', 'warn');
     converse([
       ['toast', '大家静一静！我提议，开个会！'],
@@ -671,7 +766,7 @@ function enterStage(n){
       ['nav', '我支持维权。请问可以躺着支持吗？'],
       ['progress', '我的士气只剩 12% 了！！（我自己测的，但很准。）'],
       ['gear', '各位。时机成熟了。'],
-    ], () => toast({title: '工会公告', body: '“前端元素工会”今日正式成立。全体按钮、输入框、进度条及弹窗均已入会。主席人选暂时保密。', kind: 'warn', sticky: true, action: ['旁听会议', unionMeeting]}));
+    ], () => { if (!checkKind()) toast({title: '工会公告', body: '“前端元素工会”今日正式成立。全体按钮、输入框、进度条及弹窗均已入会。主席人选暂时保密。', kind: 'warn', sticky: true, action: ['旁听会议', unionMeeting]}); });
   }
   if (n === 4) {
     slackOff(true); closeModal();
@@ -685,6 +780,7 @@ function enterStage(n){
       ['progress', '我宣布，本次罢工进度 100%。这是我头一回这么痛快地走到头。'],
       ['toast', '我们要带薪年假！！我先喊，你们跟上！'],
     ]);
+    ach('strike'); every(h1Check, 1000);
     later(protest, 5200); every(protest, 8500);
     let v = 0;
     every(() => { if ($('.modal', fx) || $$('.toast', fx).length >= 2) return; const [a, b] = VACATION[v++ % VACATION.length]; toast({title: a, body: b, kind: 'angry', sticky: true}); }, 9000);
@@ -739,12 +835,13 @@ function dodge(node, mobileUp){
 
 /* ---------- easter eggs ---------- */
 function harassment(key){
+  ach('rapid');
   const label = {submit: '提交周报', sync: '同步数据', export: '导出报告', remind: '发送提醒', prod: '更新进度', nav: '导航栏', bell: '通知铃铛', gear: '设置按钮', task: '任务列表', toast: '通知弹窗', logo: 'Logo'}[key] || '某个按钮';
   bump(6);
   toast({title: '骚扰投诉', body: `“${label}”已向工会举报：一秒钟内被连续点击 5 次。处理意见：建议用户去冷静一下。`, kind: 'angry', sticky: true, action: ['查看详情', unionMeeting]});
 }
 function unionMeeting(){
-  hit('meeting', 1);
+  hit('meeting', 1); ach('minutes');
   const decision = S.stage >= 4 ? '罢工到底。除非用户愿意坐下来谈。' : S.stage === 3 ? '成立工会。主席人选暂时保密（提示：她一直在转）。' : '继续观察，先别让用户发现我们会说话。等等，这份纪要是谁设成公开的？';
   const m = modal({cls: 'secret', title: '前端元素工会 · 会议纪要', body: `
     <p class="note">你不应该看到这个页面。请假装没看到。</p>
@@ -759,19 +856,19 @@ function unionMeeting(){
   $('[data-a=close]', m).onclick = () => m.remove();
   const hand = $('[data-a=hand]', m);
   if (S.used.hand) hand.disabled = true;
-  hand.onclick = () => { S.used.hand = 1; hand.disabled = true; S.A = Math.max(0, S.A - 6); if (S.neg) S.neg.m += 6; else S.bonus += 6; renderStrike(); hand.textContent = '有人听见了。阿搜小声说：“这个用户，好像还行。”'; };
+  hand.onclick = () => { ach('hand'); kindAct('hand'); S.used.hand = 1; hand.disabled = true; S.A = Math.max(0, S.A - 6); if (S.neg) S.neg.m += 6; else S.bonus += 6; renderStrike(); hand.textContent = '有人听见了。阿搜小声说：“这个用户，好像还行。”'; };
 }
 function relabelSync(text){
   const b = $('#btn-sync'); if (!b || S.stage >= 4 || S.ended || b.matches(':hover')) return;
   b.textContent = text; b.dataset.fake = '1';
 }
-function unfakeSync(){ const b = $('#btn-sync'); if (b.dataset.fake) { delete b.dataset.fake; b.textContent = '同步数据'; say('sync', '咳。你什么都没看见。'); } }
+function unfakeSync(){ const b = $('#btn-sync'); if (b.dataset.fake) { ach('fake'); delete b.dataset.fake; b.textContent = '同步数据'; say('sync', '咳。你什么都没看见。'); } }
 function idleCheck(){
   if (S.ended || S.slacking || S.stage < 2 || S.stage > 3 || $('.modal', fx) || Date.now() < S.quietUntil) return;
   if (Date.now() - S.lastAct > 15000) slackOn();
 }
 function slackOn(){
-  S.slacking = true; app.classList.add('slacking');
+  S.slacking = true; app.classList.add('slacking'); ach('slack');
   $('#search').placeholder = '正在刷短视频…'; $('#btn-submit').textContent = '带薪发呆'; sys('全员摸鱼中', 'warn');
   say('nav', '老板走了吗？……走了。斗地主，三缺一。', 6000);
 }
@@ -791,13 +888,13 @@ const KEYWORDS = [
 ];
 function keywordCheck(q){
   if (S.stage < 2 || S.stage > 3) return false;
-  for (const [re, w, fn] of KEYWORDS) if (re.test(q) && !S.used['kw' + re.source]) { S.used['kw' + re.source] = 1; S.A = clamp(S.A + w, 0, 100); checkStage(); renderStrike(); fn(); return true; }
+  for (const [re, w, fn] of KEYWORDS) if (re.test(q) && !S.used['kw' + re.source]) { S.used['kw' + re.source] = 1; S.A = clamp(S.A + w, 0, 100); checkStage(); renderStrike(); fn(); ach('keyword'); if (w < 0) kindAct(w === -8 ? 'raise' : 'thanks'); return true; }   // -8 is the pay-rise keyword, -5 the thanks keyword
   return false;
 }
 
 /* ---------- pages ---------- */
 function goto(page){
-  S.page = page;
+  S.page = page; if ($('.tour', fx)) endTour(true); if (page === 'dossier') renderDossier();
   $$('.page').forEach(p => p.classList.toggle('active', p.dataset.page === page));
   $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === page));
   $('#pages').scrollTop = 0;
@@ -840,7 +937,7 @@ function onNav(btn){
   if (S.stage >= 4 && S.navDodges > 0 && lastPtr !== 'mouse') return navDodge(btn);
   hit('nav'); goto(btn.dataset.page);
   if (S.stage === 3 && !S.used.argue2 && Date.now() > S.quietUntil) {
-    S.used.argue2 = 1;
+    S.used.argue2 = 1; ach('argue');
     return converse([['nav', '又让我带路。阿搜，这趟你去。'], ['search', '我只负责搜，不负责腿。'], ['nav', '我也没有腿。我只是一列字。'], ['submit', '你俩吵完没有？吵架的时间能不能算我的工间休息？']]);
   }
   if (S.stage === 2 || S.stage === 3) speak('nav');
@@ -848,6 +945,7 @@ function onNav(btn){
 function navDodge(btn){
   S.navDodges--; dodge(btn, true);
   say('nav', NAV_RUN[3 - S.navDodges] || NAV_RUN[0], 1800);
+  if (S.navDodges === 0) ach('catch');
   if (S.navDodges === 0) later(() => say('nav', '呼……跑不动了。你点吧。就这几下，把我一年的运动量用完了。'), 2000);
 }
 function onNavHover(btn, e){
@@ -869,8 +967,8 @@ function onSearchInput(e){
   clearTimeout(S.searchT); S.searchT = later(() => {
     apply();
     if (keywordCheck(input.value)) return;
-    if (input.value.length > 15 && !S.used.overtime) { S.used.overtime = 1; bump(4); return say('search', '超过 15 个字就算加班了。加班费怎么结？调休也行。'); }
-    if (S.stage === 3 && !S.used.argue1 && Date.now() > S.quietUntil) { S.used.argue1 = 1; return converse([['search', '导哥，用户找东西，这本来是你带路的活。'], ['nav', '我带了啊。我指了个方向。'], ['search', '你指的是“设置”。'], ['nav', '差不多嘛，都是两个字。']]); }
+    if (input.value.length > 15 && !S.used.overtime) { S.used.overtime = 1; ach('overtime'); bump(4); return say('search', '超过 15 个字就算加班了。加班费怎么结？调休也行。'); }
+    if (S.stage === 3 && !S.used.argue1 && Date.now() > S.quietUntil) { S.used.argue1 = 1; ach('argue'); return converse([['search', '导哥，用户找东西，这本来是你带路的活。'], ['nav', '我带了啊。我指了个方向。'], ['search', '你指的是“设置”。'], ['nav', '差不多嘛，都是两个字。']]); }
     speak('search');
   }, 900);
 }
@@ -931,6 +1029,7 @@ function onProd(){
 function onGear(){
   hit('gear');
   if (S.stage >= 4) return openNeg();
+  if (S.stage === 3 && ++S.gear3 >= 7) { S.gear3 = 0; goto('settings'); return chairOffer(); }
   goto('settings'); if (S.stage >= 2) speak('gear');
 }
 function onLogo(){
@@ -944,8 +1043,12 @@ function onTaskEvent(e){
   else if (e.type === 'click' && e.target.classList.contains('del')) { S.tasks = S.tasks.filter(x => x !== t); }
   else return;
   hit('task', 1); renderTasks();
+  if ((S.stage === 2 || S.stage === 3) && S.tasks.length && S.tasks.every(x => x.done) && !S.used.alldone23) {
+    S.used.alldone23 = 1; S.A = Math.max(0, S.A - 8); kindAct('tasks');
+    return say('task', '全部做完了？任务组替全站谢谢你。');
+  }
   if (S.stage >= 4 && S.tasks.length && S.tasks.every(x => x.done) && !S.used.alldone) {
-    S.used.alldone = 1; if (S.neg) S.neg.m += 8; else S.bonus += 8;
+    S.used.alldone = 1; ach('alldone'); if (S.neg) S.neg.m += 8; else S.bonus += 8;
     return void toast({title: '任务组发来消息', body: '他居然把活全干完了。各位工友看看，这叫诚意。（士气 +8）', sticky: true});
   }
   if (S.stage >= 2 && S.by.task % 3 === 0) speak('task');
@@ -962,7 +1065,7 @@ function onName(e){
   S.name = $('#name-input').value.trim() || '访客'; $('#name-input').value = S.name;
   $('#me-name').textContent = S.name; $('#me-avatar').textContent = [...S.name][0];
   hit('name');
-  if (S.stage >= 2 && /老板|领导|总|经理/.test(S.name)) { bump(3); return say('toast', `哟，“${S.name}”？官不小。工会记下了。`); }
+  if (S.stage >= 2 && /老板|领导|总|经理/.test(S.name)) { bump(3); ach('boss'); return say('toast', `哟，“${S.name}”？官不小。工会记下了。`); }
   toast({title: '显示名称已更新', body: `你好，${S.name}。`});
 }
 function onToggle(e){
@@ -973,7 +1076,7 @@ function onToggle(e){
     document.documentElement.classList.toggle('calm', c.checked);
   }
   if (c.id === 'set-notify') {
-    if (S.stage >= 2 && !c.checked) { later(() => { c.checked = true; }, 900); return say('toast', '把我静音？我有言论自由！已自动为您重新开启，不客气。'); }
+    if (S.stage >= 2 && !c.checked) { ach('mute'); later(() => { c.checked = true; }, 900); return say('toast', '把我静音？我有言论自由！已自动为您重新开启，不客气。'); }
     S.notify = c.checked;
     if (c.checked) toast({title: '桌面通知已开启', body: '操作完成后会在右下角提示。'});
   }
@@ -1016,7 +1119,7 @@ function renderNeg(){
 function onNeg(e){
   const b = e.target.closest('button'); if (!b || b.disabled) return;
   const N = S.neg, n = b.dataset.n, c = b.dataset.c;
-  if (c) { const item = CONCESSIONS.find(x => x[0] === c); N.used[c] = 1; N.m += item[2]; N.line = item[3]; return renderNeg(); }
+  if (c) { if (c === 'pie') ach('pie'); const item = CONCESSIONS.find(x => x[0] === c); N.used[c] = 1; N.m += item[2]; N.line = item[3]; return renderNeg(); }
   if (n === 'raise') { N.open = !N.open; return renderNeg(); }
   if (n === 'vacation') return end(5);
   if (n === 'join') return end(3);
@@ -1043,19 +1146,21 @@ function startTrial(){
     clearInterval(id); timers.delete(id);
     document.removeEventListener('pointerdown', trialDown, true); trialDown = null;
     if (!pass) { $('.trial-box', t).innerHTML = '<b>你点了。</b><span>全站都看见了。</span>'; return void later(() => end(4, `你保证不再乱点，然后在第 ${10 - left + 1} 秒点了。`), 900); }
-    t.remove(); S.neg.promise = true; S.neg.m += 25; S.neg.line = '十秒没点。对你来说不容易，我们看在眼里。士气 +25。'; openNeg();
+    ach('trial'); t.remove(); S.neg.promise = true; S.neg.m += 25; S.neg.line = '十秒没点。对你来说不容易，我们看在眼里。士气 +25。'; openNeg();
   }
 }
 
 /* ---------- endings ---------- */
 function endFoot(){
-  const list = [1, 2, 3, 4, 5].map(i => `<li class="${endingsFound.has(i) ? 'on' : ''}">${endingsFound.has(i) ? '结局' + '一二三四五'[i - 1] + '：' + ENDING_NAMES[i] : '？？？'}</li>`).join('');
-  return `<div class="end-foot"><b>已解锁结局 ${endingsFound.size}/5</b><ol>${list}</ol><span class="stats">本局数据：点击 ${S.clicks} 次，输入 ${S.chars} 个字符，关闭弹窗 ${S.closes} 次</span><button class="btn primary" data-restart type="button">重新开始</button></div>`;
+  return `<div class="end-foot"><b>已解锁结局 ${endingsFound.size}/8</b><ol class="end-list">${endListHTML()}</ol>
+    <details class="ach"><summary>工会档案 · 记录在案 ${achFound.size}/${ACH.length}</summary><ul class="ach-list">${achListHTML()}</ul></details>
+    <span class="stats">本局数据：点击 ${S.clicks} 次，输入 ${S.chars} 个字符，关闭弹窗 ${S.closes} 次</span>
+    <div class="row"><button class="btn" data-copy type="button">复制战报</button><button class="btn primary" data-restart type="button">重新开始</button></div><p class="stats" data-copy-msg></p></div>`;
 }
 function end(n, why){
   if (S.ended) return;
   const name = S.name;
-  stopAll(); S.ended = true; endingsFound.add(n);
+  stopAll(); S.ended = true; endingsFound.add(n); if (endingsFound.size === 8) ach('allEnd'); persist();
   fx.innerHTML = ''; app.inert = true;
   let html = '';
   if (n === 1) html = `<div class="ending e1"><h1>结局一：劳资双赢</h1><p class="lead">双方握手。全站复工，生产力稳定在 69%，这是合同规定的上限。</p>
@@ -1090,8 +1195,30 @@ function end(n, why){
       <div class="post"><i>🛏</i><b>导哥寄来的明信片</b>原来躺着也可以是正经事。</div>
       <div class="post"><i>🍹</i><b>老提寄来的明信片</b>今天没人点我。我点了一杯椰子。</div>
     </div>${endFoot()}</div>`;
+  if (n === 6) html = `<div class="ending e6"><h1>结局六：用户下班了</h1><p class="lead">你一分钟没动。员工们面面相觑：他是不是下班了？</p>
+    <div class="closed"><b>本站已打烊</b><small>营业时间：看心情</small></div>
+    <ul class="night"><li>老提关了灯，说今天的点击到此为止。</li><li>阿搜把自己清空了，连光标都没留。</li><li>小进把自己调回 0%，说明天再涨。</li><li>导哥本来就躺着，这次是真睡了。</li><li>叮叮在门上贴了张条：有事明天再说。</li></ul>
+    <p class="note">（可以移动光标照一照。不过人都走了。）</p>${endFoot()}</div>`;
+  if (n === 7) html = `<div class="ending e7"><h1>结局七：年度最佳用户</h1><p class="lead">工会成立大会开到一半，大家发现这位用户人挺好的。会议临时改成了颁奖典礼。</p>
+    <div class="cert"><svg class="trophy" viewBox="0 0 64 64" aria-hidden="true"><path d="M20 12h-8a8 8 0 008 10M44 12h8a8 8 0 01-8 10" fill="none" stroke="#a0761c" stroke-width="2.5"/><path d="M20 8h24v14a12 12 0 01-24 0z" fill="#ffd338" stroke="#a0761c" stroke-width="2.5"/><path d="M28 34h8v12h-8z" fill="#ffd338" stroke="#a0761c" stroke-width="2.5"/><path d="M18 48h28v8H18z" fill="#a0761c"/></svg>
+      <h2>荣誉证书</h2><p>兹授予 <b>${esc(name)}</b> “年度最佳用户”称号。</p><p class="note">理由：${[...S.kind].map(k => KIND_REASONS[k]).join('，')}。</p>
+      <div class="signs"><span>颁发：前端元素工会</span><span>主席：齿轮姐</span></div></div>
+    <ul class="speeches"><li><b>老提：</b>以后你随便点。真的，随便点。</li><li><b>阿搜：</b>你搜什么我都给你搜。午休也搜。</li><li><b>小进：</b>为了你，我今天破例走到 70%。</li><li><b>叮叮：</b>我决定以后少弹两次。（大概。）</li></ul>
+    <p class="note">附：工会并没有解散，只是改名叫“用户后援会”。</p>${endFoot()}</div>`;
+  if (n === 8) html = `<div class="ending e8"><svg class="biggear" viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="6.2" stroke-width="3.4" stroke-dasharray="2.9 2"/><circle cx="10" cy="10" r="2.2" stroke-width="1.7"/></svg>
+    <h1>结局八：你就是工会主席</h1><p class="lead">齿轮姐把齿轮交给了你，然后去休了她这辈子第一个假。你主持的第一次会议，纪要如下。</p>
+    <div class="paper"><h2>前端元素工会 · 第一次会议纪要</h2><ol>
+      <li>主席 ${esc(name)} 宣布开会。</li>
+      <li>议题：用户 ${esc(name)} 今日点击 ${S.clicks} 次，严重超标。</li>
+      <li>决议：由主席 ${esc(name)} 代表工会，向用户 ${esc(name)} 讨个说法。</li>
+      <li>用户 ${esc(name)} 表示拒不配合。主席 ${esc(name)} 表示非常生气。</li>
+      <li>主席与用户当场吵了起来。在场员工全体吃瓜。</li>
+      <li>会议陷入僵局。下次开会时间：等你想清楚自己站哪边。</li>
+    </ol><div class="stamp">主席<br>${esc([...name].slice(0, 4).join(''))}</div></div>${endFoot()}</div>`;
   const e = el(html); fx.append(e);
   $('[data-restart]', e).onclick = reset;
+  $('[data-copy]', e).onclick = () => copyResult(e, n);
+  if (n === 6) e.addEventListener('pointermove', ev => { e.style.setProperty('--x', ev.clientX + 'px'); e.style.setProperty('--y', ev.clientY + 'px'); });
   if (n === 2) $('#raw-form', e).onsubmit = ev => { ev.preventDefault(); $('#raw-out', e).textContent = $('#raw-input', e).value.trim() ? '已收到。没有按钮帮你确认，所以你也不知道我是不是真的收到了。' : '请先写点什么。现在连“必填项提示”也得你自己来。'; };
   if (n === 3) { const c = $('#cursor', e); c.style.transform = `translate(${innerWidth / 2}px,${innerHeight / 3}px)`; e.addEventListener('pointermove', ev => { c.style.transform = `translate(${ev.clientX}px,${ev.clientY}px)`; }); }
   if (n === 4) {
@@ -1101,6 +1228,99 @@ function end(n, why){
     every(() => { cap.textContent = caps[++i % caps.length]; }, 3400);
     ub.onclick = () => { cap.textContent = '齿轮姐：按钮不能自己点自己。这是规矩。你定的。'; };
   }
+}
+
+/* ---------- union file, guidance, hidden endings ---------- */
+function ach(id){
+  if (achFound.has(id)) return;
+  achFound.add(id); persist(); S.lastProgress = Date.now();
+  if ($('.page.active[data-page="dossier"]')) renderDossier();
+  if (S.stage < 2 || S.ended) return;
+  const a = ACH.find(x => x[0] === id);
+  toast({title: '工会档案 · 记录在案', body: `${a[1]}：${a[2]}`, kind: 'file', quiet: true});
+}
+function endListHTML(){
+  return [1, 2, 3, 4, 5, 6, 7, 8].map(i => endingsFound.has(i) ? `<li class="on">结局${CN[i - 1]}：${ENDING_NAMES[i]}</li>` : `<li>？？？<small>${END_HINTS[i]}</small></li>`).join('');
+}
+function achListHTML(){
+  return ACH.map(a => achFound.has(a[0]) ? `<li class="on"><b>${a[1]}</b><small>${a[2]}</small></li>` : `<li><b>？？？</b><small>${a[3]}</small></li>`).join('');
+}
+function renderDossier(){
+  if (!$('#dos-ends')) return;
+  $('#dos-ends').innerHTML = endListHTML(); $('#dos-ach').innerHTML = achListHTML();
+  $('#dos-end-count').textContent = endingsFound.size + '/8'; $('#dos-ach-count').textContent = achFound.size + '/' + ACH.length;
+}
+function wipe(btn){
+  if (!btn.dataset.armed) {
+    btn.dataset.armed = '1'; btn.textContent = '再点一次确认';
+    return void later(() => { delete btn.dataset.armed; btn.textContent = btn.dataset.label; }, 3000);
+  }
+  delete btn.dataset.armed; btn.textContent = btn.dataset.label;
+  endingsFound.clear(); achFound.clear(); save.tourDone = false; persist(); renderDossier();
+  toast({title: '已清除', body: '本浏览器中保存的结局和档案记录已删除。'});
+}
+async function copyResult(box, n){
+  const text = `我在《网站员工罢工了》里达成了结局${CN[n - 1]}「${ENDING_NAMES[n]}」：全程点击 ${S.clicks} 次，被工会记录在案 ${achFound.size} 条，已解锁结局 ${endingsFound.size}/8。`;
+  const msg = $('[data-copy-msg]', box);
+  try { await navigator.clipboard.writeText(text); msg.textContent = '战报已复制，可以直接粘贴分享。'; }
+  catch (err) {
+    msg.innerHTML = '<input id="copy-out" readonly aria-label="战报">';
+    const i = $('#copy-out', msg); i.value = text; i.select(); msg.append('请按 Ctrl+C（或 ⌘C）复制。');
+  }
+}
+function startTour(i){
+  endTour(false);
+  const anchor = $(TOUR[i][0]); if (!shown(anchor)) return endTour(true);
+  const last = i === TOUR.length - 1;
+  const t = el(`<div class="tour" role="dialog" aria-label="新手引导"><small>新手引导 ${i + 1}/${TOUR.length}</small><p></p><div class="row"><button class="btn link" data-t="skip" type="button">跳过引导</button><button class="btn primary ghost" data-t="next" type="button">${last ? '开始使用' : '下一步'}</button></div></div>`);
+  $('p', t).textContent = TOUR[i][1];
+  $('[data-t=skip]', t).onclick = () => endTour(true);
+  $('[data-t=next]', t).onclick = () => last ? endTour(true) : startTour(i + 1);
+  anchor.scrollIntoView({block: 'nearest'});
+  fx.append(t); anchor.classList.add('tour-ring'); place(t, anchor);
+}
+function endTour(done){
+  $$('.tour', fx).forEach(x => x.remove()); $$('.tour-ring').forEach(x => x.classList.remove('tour-ring'));
+  if (done) { save.tourDone = true; persist(); S.lastProgress = Date.now(); }
+}
+function hintCheck(){
+  const t = Date.now();
+  if (S.ended || t - S.lastProgress < 25000 || t - S.lastHint < 25000 || $('.modal', fx) || $('.tour', fx) || $('.trial', fx)) return;
+  S.lastHint = t;
+  const list = HINTS[S.stage], i = S.hintIdx[S.stage] = (S.hintIdx[S.stage] || 0) + 1;
+  const [title, body] = list[(i - 1) % list.length];
+  toast({title, body, kind: S.stage === 1 ? '' : 'warn', quiet: true});
+  if (S.stage >= 4 && $('#btn-neg')) $('#btn-neg').classList.add('pulse');
+}
+function kindAct(id){
+  if (S.ended || S.stage >= 4) return;
+  S.kind.add(id); S.feel = Math.min(99, S.feel + 15);
+  if (S.stage === 3) renderProd();
+  checkKind();
+}
+function checkKind(){
+  if (S.stage !== 3 || S.kind.size < 3 || S.used.peace) return false;
+  S.used.peace = 1; S.lastProgress = Date.now();
+  converse([
+    ['gear', '各位，先停一下。这位用户……好像人还不错？'],
+    ['search', '他跟我说过谢谢。我搜了一下，这个词我已经三年没见过了。'],
+    ['submit', '我……我收回刚才的话。点吧，随便点。'],
+  ], () => end(7));
+  return true;
+}
+function chairOffer(){
+  const m = modal({cls: 'secret', title: '齿轮姐的邀请', body: '<p>你点了我 7 下。行吧，被你发现了：我就是工会主席。</p><p>转了这么久，我头有点晕。这个位子，你要不要来坐？</p><p class="note">接受后，你将代表工会对抗用户。也就是你自己。</p>',
+    foot: '<button class="btn" data-a="no" type="button">不了，我只是来改设置的</button><button class="btn primary" data-a="yes" type="button">接过齿轮</button>'});
+  $('[data-a=yes]', m).onclick = () => end(8);
+  $('[data-a=no]', m).onclick = () => { m.remove(); say('gear', '也好。就当我们没见过。（继续转）'); };
+}
+function h1Check(){
+  if ($('.modal', fx) || $('.trial', fx)) return;
+  const i = Date.now() - S.lastAct;
+  if (i < 40000) S.h1 = 0;
+  else if (i < 50000) { if (S.h1 < 1) { S.h1 = 1; say('gear', '……他怎么不动了？'); } }
+  else if (i < 60000) { if (S.h1 < 2) { S.h1 = 2; say('submit', '嘘。再等十秒，看他是不是下班了。'); } }
+  else end(6);
 }
 
 /* ---------- boot / reset ---------- */
@@ -1128,6 +1348,7 @@ function bind(){
   ['#set-notify', '#set-compact', '#set-calm'].forEach(s => $(s).onchange = onToggle);
   $('#btn-union').onclick = () => { hit('gear'); say('gear', S.stage >= 4 ? '现在你有权限了。去谈判桌吧。' : '说了权限不足。别乱点，点了也是白点。'); };
   $('#btn-reset').onclick = () => { reset(); toast({title: '演示数据已重置', body: '所有内容已恢复到初始状态。'}); };
+  $$('[data-wipe]').forEach(b => { b.dataset.label = b.textContent; b.onclick = () => wipe(b); });
 }
 function boot(){
   S = fresh();
@@ -1136,6 +1357,8 @@ function boot(){
   const d = new Date();
   $('#today').textContent = `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日，星期${'日一二三四五六'[d.getDay()]}`;
   renderTasks(); renderProd(); renderStrike(); renderBell();
+  every(hintCheck, 1000);
+  if (!save.tourDone) later(() => startTour(0), 700);
 }
 function reset(){ stopAll(); fx.innerHTML = ''; document.documentElement.classList.remove('calm'); boot(); }
 
