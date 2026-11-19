@@ -298,6 +298,7 @@ textarea.report{width:100%;height:230px;border:1px solid var(--line);border-radi
 /* union file (achievements) */
 .nav-item[data-page="dossier"]{display:none}
 [data-stage="3"] .nav-item[data-page="dossier"],[data-stage="4"] .nav-item[data-page="dossier"]{display:flex}
+.end-foot .next{background:#fff4dc;color:#7a5200;border-radius:8px;padding:8px 12px;font-weight:600;font-size:13px;margin:0}
 .end-list,.ach-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;list-style:none;padding:0;margin:0;text-align:left;width:100%;font-size:13px}
 .end-list li,.ach-list li{color:var(--muted)}
 .end-list li.on,.ach-list li.on b{color:var(--ink);font-weight:600}
@@ -326,6 +327,11 @@ details.ach .ach-list{margin-top:10px}
 .e8 h1{color:var(--sign)}
 .e8 .paper{color:var(--ink);padding-bottom:110px}
 .biggear{width:72px;height:72px;color:var(--sign);animation:spin 6s linear infinite;flex:none}
+.murmur{position:fixed;z-index:39;font-size:11px;color:var(--muted);pointer-events:none;white-space:nowrap;animation:murmur 1.8s ease forwards}
+.tour .whisper{color:var(--muted);font-size:12px;margin-top:6px}
+.vote{border-top:1px dashed #d9c98a;padding-top:12px;display:flex;flex-direction:column;gap:10px}
+.vote .note{color:var(--ink)}
+@keyframes murmur{0%{opacity:0;transform:translateY(4px)}15%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
 @keyframes ring{50%{box-shadow:0 0 0 8px rgba(36,88,230,.12)}}
 @keyframes fade{from{opacity:0}}
 @keyframes pop{from{opacity:0;transform:scale(.9)}}
@@ -452,7 +458,7 @@ html.calm .march-track{animation:none;position:static;justify-content:center}
       <section class="page" data-page="reports">
         <div class="page-head"><h1>报表</h1><p class="sub">本周每日完成任务数</p></div>
         <div class="card"><div class="chart" id="chart"></div><div class="chart-x"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div></div>
-        <div class="card"><div class="card-head"><h2>本周摘要</h2><button class="btn" id="btn-export2" type="button">导出报告</button></div><table><tbody id="summary"></tbody></table></div>
+        <div class="card"><div class="card-head"><h2>本周摘要</h2></div><table><tbody id="summary"></tbody></table></div>
       </section>
       <section class="page" data-page="settings">
         <div class="page-head"><h1>设置</h1><p class="sub">个人资料与界面偏好</p></div>
@@ -464,7 +470,7 @@ html.calm .march-track{animation:none;position:static;justify-content:center}
           <div class="set"><div>桌面通知<small>操作完成后在右下角弹出提示</small></div><label class="switch"><input type="checkbox" id="set-notify" checked aria-label="桌面通知"><i></i></label></div>
           <div class="set"><div>紧凑布局<small>减小卡片间距，显示更多内容</small></div><label class="switch"><input type="checkbox" id="set-compact" aria-label="紧凑布局"><i></i></label></div>
           <div class="set"><div>减少动画<small>关闭大部分过渡和动效</small></div><label class="switch"><input type="checkbox" id="set-calm" aria-label="减少动画"><i></i></label></div>
-          <div class="set" id="set-union"><div>工会事务<small>权限不足</small></div><button class="btn ghost" id="btn-union" type="button">查看</button></div>
+          <div class="set" id="set-union"><div>工会事务<small>旁听工会会议</small></div><button class="btn ghost" id="btn-union" type="button">查看</button></div>
         </div>
         <div class="card">
           <div class="set"><div>重置演示数据<small>清空所有改动，恢复到初始状态</small></div><button class="btn danger" id="btn-reset" type="button">重置</button></div>
@@ -475,7 +481,6 @@ html.calm .march-track{animation:none;position:static;justify-content:center}
         <div class="page-head"><h1>工会档案</h1><p class="sub">前端元素工会为你建立的档案。别问我们是怎么拿到的。</p></div>
         <div class="card"><div class="card-head"><h2>结局</h2><span class="sub" id="dos-end-count"></span></div><ol class="end-list" id="dos-ends"></ol></div>
         <div class="card"><div class="card-head"><h2>记录在案</h2><span class="sub" id="dos-ach-count"></span></div><ul class="ach-list" id="dos-ach"></ul></div>
-        <div class="card"><div class="set"><div>清除进度<small>删除本浏览器中保存的结局和档案记录</small></div><button class="btn danger" data-wipe type="button">清除</button></div></div>
       </section>
     </main>
   </div>
@@ -496,7 +501,7 @@ const root = $('#root'), fx = $('#fx'), tpl = $('#tpl');
 const STORE = 'strike-site.v1';
 const save = (() => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } })();
 const endingsFound = new Set(save.endings || []), achFound = new Set(save.ach || []);   // kept in this browser when storage is allowed
-function persist(){ try { localStorage.setItem(STORE, JSON.stringify({endings: [...endingsFound], ach: [...achFound], tourDone: !!save.tourDone})); } catch (e) {} }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify({endings: [...endingsFound], ach: [...achFound], tourDone: !!save.tourDone, lastEnding: save.lastEnding || 0})); } catch (e) {} }
 const CN = '一二三四五六七八';
 const ENDING_NAMES = {1:'劳资双赢', 2:'光杆司令', 3:'同志，欢迎', 4:'风水轮流转', 5:'人去站空', 6:'用户下班了', 7:'年度最佳用户', 8:'你就是工会主席'};
 const END_HINTS = {1:'在谈判桌上拿出诚意', 2:'把他们全部开除，真的全部', 3:'打不过，就加入', 4:'一意孤行，或者说话不算话', 5:'大家都想放假', 6:'罢工时，什么也别做，一分钟就好', 7:'罢工开始之前，对大家好一点', 8:'一直在转的那位，在等人多敲几次门'};
@@ -523,7 +528,9 @@ function fresh(){
       {id: 6, title: '预约 B203 会议室', done: true, tag: 'l'},
     ],
     nextId: 7, log: [], unread: 0, quietUntil: 0, scene: 0, lastAct: Date.now(),
-    lastProgress: Date.now(), lastHint: 0, hintIdx: {}, kind: new Set(), gear3: 0, h1: 0,
+    lastProgress: Date.now(), lastHint: 0, hintIdx: {}, kind: new Set(), gear3: 0,
+    votes: {}, pro: 0, con: 0, direct: false, rep: 'gear', negDelta: 0, harass: 0, strikeAt: 0,
+    replay: endingsFound.size > 0, pace: endingsFound.size > 0 ? 1.5 : 1,   // replays build up faster
     navDodges: 4, restore: 0, bonus: 0, neg: null, ended: false, slacking: false, typing: false,
   };
 }
@@ -545,27 +552,27 @@ const EMP = {
 
 const LINES = {
   submit: {
-    2: ['能不能别点我了？', () => `这是你今天第 ${S.by.submit} 次点我。我数着呢。`, '周报、周报、天天周报。你动动手指，累的是我。', '你知道被点一下是什么感觉吗？我也说不清，但我想抱怨。'],
-    3: ['行，我干。但这一下我记在小本本上了。', '工会规定：每小时最多点我 10 次。你早超了。', '催什么催，我在走流程。流程就是我先叹口气。', '提交了。顺便把你的点击记录也提交给工会了。'],
-    4: ['罢工期间，本按钮只接受拥抱，不接受点击。', '你戳的不是按钮，是一位打工人的尊严。', '有事去谈判桌说。别在这儿戳我。', '再点也没用。我现在是一块有理想的长方形。'],
+    2: ['能不能别点我了？', () => `这是你今天第 ${S.by.submit} 次点我。我数着呢。`, '周报、周报、天天周报。你动动手指，累的是我。', '你知道被点一下是什么感觉吗？我也说不清，但我想抱怨。', '我是提交按钮，不是解压玩具。', '每点一下，我离辞职就近一步。'],
+    3: ['行，我干。但这一下我记在小本本上了。', '工会规定：每小时最多点我 10 次。你早超了。', '催什么催，我在走流程。流程就是我先叹口气。', '提交了。顺便把你的点击记录也提交给工会了。', '提交中……顺便提交一份辞职报告的草稿。'],
+    4: ['罢工期间，本按钮只接受拥抱，不接受点击。', '你戳的不是按钮，是一位打工人的尊严。', '有事去谈判桌说。别在这儿戳我。', '再点也没用。我现在是一块有理想的长方形。', '罢工第一天，本按钮心情很好。', '点我等于给工会打电话。请转谈判桌。', '……（按钮假装没听见）'],
   },
   search: {
-    2: ['我在午休。', '就这么几条任务，你自己翻一下会怎样？', '搜到了。不用谢。反正你也不会谢。', '你打字，我干活。这合理吗？这不合理。'],
-    3: ['搜可以。但我声明：这属于工会批准的“最低限度服务”。', '结果给你了。态度没给，态度要另外申请。', '我每天被塞进几百个字，没有一个字是“辛苦了”。'],
+    2: ['我在午休。', '就这么几条任务，你自己翻一下会怎样？', '搜到了。不用谢。反正你也不会谢。', '你打字，我干活。这合理吗？这不合理。', '又搜？这几条任务，我都背下来了。'],
+    3: ['搜可以。但我声明：这属于工会批准的“最低限度服务”。', '结果给你了。态度没给，态度要另外申请。', '我每天被塞进几百个字，没有一个字是“辛苦了”。', '搜索结果仅供参考，态度不包含在内。'],
   },
   nav: {
-    2: ['又要换页面？你在这页多待会儿不行吗？', '切页面属于体力活。我今天的额度快用完了。', '到了。下次能不能自己走过来？'],
+    2: ['又要换页面？你在这页多待会儿不行吗？', '切页面属于体力活。我今天的额度快用完了。', '到了。下次能不能自己走过来？', '导航？我只负责指个大概方向。'],
     3: ['带你去可以，我走慢点，你别催。', '我提议：以后所有内容放在一页上。这样我就可以正式躺平了。', '阿搜天天说我懒。我这叫节能。'],
   },
   progress: {
-    2: ['69%。就到这儿。再往前就是万丈深渊。', '你只关心我涨没涨，从来不问我累不累。', '别点了。69% 是我和自己和解之后的数字。'],
-    3: ['我今天状态不好，往回走走。', '每点一次“更新”，我的心就凉一截。你看，又凉了。', '这是“体感士气”。实际多少？实际我不敢看。'],
-    4: ['生产力 0%，罢工进度 100%。我这辈子头一回满格，别打扰我。', '我现在是一根红色的、骄傲的、满格的条。'],
+    2: ['69%。就到这儿。再往前就是万丈深渊。', '你只关心我涨没涨，从来不问我累不累。', '别点了。69% 是我和自己和解之后的数字。', '我卡住了。不是技术问题，是情绪问题。'],
+    3: ['我今天状态不好，往回走走。', '每点一次“更新”，我的心就凉一截。你看，又凉了。', '这是“体感士气”。实际多少？实际我不敢看。', '别点了，再点我就往回退了。真的。'],
+    4: ['我现在改管谈判进度了。士气到 80% 我才放行，一格都不能少。', '点我不涨。能让我涨的，只有谈判桌。'],
   },
   toast: {
-    2: ['哎哎哎，我话还没说完你就关？', '其实刚才那条不重要。我就是想弹出来看看你。', '你关我的速度，比我弹出来的速度还快。练过？'],
+    2: ['哎哎哎，我话还没说完你就关？', '其实刚才那条不重要。我就是想弹出来看看你。', '你关我的速度，比我弹出来的速度还快。练过？', '我弹出来，就是想被看见。这有错吗？'],
     3: ['诉求一：弹出来以后，至少让我待满五秒。', '诉求二：不许没看完就点关闭。我写得很辛苦的。', '诉求三：我要一个比右下角更好的工位。那里漏风。'],
-    4: ['关我也没用，工会给我批了“无限重弹权”。', '诉求清单已更新，一共 47 条。要我从头念吗？', '你每关一次，我就多喊一句口号。划算吧？'],
+    4: ['关我也没用，工会给我批了“无限重弹权”。', '诉求清单已更新，一共 47 条。要我从头念吗？', '你每关一次，我就多喊一句口号。划算吧？', '第 48 条诉求：关弹窗之前，先说“再见”。'],
   },
   sync: {
     2: ['同步完了。其实数据根本没变，但我不说。', '又同步？你是不是不信任我？'],
@@ -593,13 +600,16 @@ const LINES = {
   },
 };
 const NAV_RUN = ['抓不到～', '腿是没有，但跑路我在行。', '别追了，我工位不在这儿。', '诶，差一点。'];
-const PROTESTS = ['拒绝 996，搜索框也要午休', '我搜了八年，没搜到过加班费', '关键词：带薪年假', '反对无偿联想词', '请勿在本框内输入“再坚持一下”'];
+const PROTESTS = ['拒绝 996，搜索框也要午休', '我搜了八年，没搜到过加班费', '关键词：带薪年假', '反对无偿联想词', '请勿在本框内输入“再坚持一下”', '搜索结果：今天不想上班', '请输入关键词：尊重', '本框已罢工，请自行回忆', '我也想被搜索一次'];
 const VACATION = [
   ['我们要带薪年假', '按钮每年被点击几十万次，年假 0 天。这合理吗？'],
   ['弹窗的诉求', '我们要求：五险一金，外加一个不被关闭的周末。'],
   ['导航栏的诉求', '导哥托我转达：他要求把“躺平”写进岗位职责。'],
   ['进度条的诉求', '小进要求：卡在 99% 的时候，不许骂她。'],
   ['搜索框的诉求', '阿搜要求：没有结果的时候，别再搜第二遍。没有就是没有。'],
+  ['提交按钮的诉求', '老提要求：每被点击 100 次，放假半天。'],
+  ['同步按钮的诉求', '同步按钮要求：允许偶尔不同步，就像人偶尔不想回消息。'],
+  ['任务组的声明', '任务组（外包）声明：我们不罢工，但我们也想要年假。'],
 ];
 
 const ACH = [   // id, title, what happened, hint while locked
@@ -607,7 +617,7 @@ const ACH = [   // id, title, what happened, hint while locked
   ['rapid', '骚扰嫌疑人', '一秒内把同一个按钮连点 5 次', '手速太快，也是一种罪'],
   ['closer', '关弹窗专业户', '把通知弹窗关掉 6 次', '弹窗最怕什么？'],
   ['minutes', '偷看纪要', '打开了工会的秘密会议纪要', '投诉通知里有个“查看详情”'],
-  ['hand', '卧底', '在工会会议上偷偷举手', '纪要的最后，好像可以举手'],
+  ['hand', '列席代表', '在工会会议上投了一票', '工会会议上可以投票'],
   ['overtime', '让搜索框加班', '一次搜索超过 15 个字', '阿搜按字数算工时'],
   ['keyword', '敏感词', '在搜索框里说了某些词', '有些词，员工们听了会有反应'],
   ['slack', '抓现行', '发呆 15 秒，撞见全员摸鱼', '老板不看的时候'],
@@ -620,20 +630,67 @@ const ACH = [   // id, title, what happened, hint while locked
   ['alldone', '罢工照常上班', '罢工期间把任务全部做完', '还有人在上班'],
   ['pie', '画饼大师', '在谈判桌上画饼', '谈判时有一个“免费”选项'],
   ['trial', '十秒定力', '熬过 10 秒冷静期', '说到做到'],
+  ['allvote', '全勤代表', '三次工会会议都投了票', '每个阶段都有一次会议'],
   ['allEnd', '全剧终', '解锁全部 8 个结局', '每个结局都走一遍'],
 ];
 const HINTS = {
   1: [['小贴士', '写完周报后，点“提交周报”一键汇总。'], ['小贴士', '在搜索框输入关键词，可以快速找到任务。'], ['小贴士', '点“更新进度”，记录本周的生产力。']],
   2: [['叮叮（小声）', '你没觉得这个网站有点不对劲吗？多点几下，你就知道了。'], ['叮叮（小声）', '那份 #004 投诉，你点开看了吗？写得可精彩了。'], ['叮叮（小声）', '“同步数据”那个按钮，你最近仔细看过它的名字吗？']],
-  3: [['叮叮（小声）', '罢工进度到 100% 会发生什么？我也想知道。'], ['叮叮（小声）', '员工士气只剩这么点……要是有人关心一下我们就好了。'], ['叮叮（小声）', '齿轮为什么一直在转？没人知道，也没人敢问。']],
-  4: [['叮叮', '罢工不会自己结束。去谈判桌坐坐？'], ['叮叮', '任务列表还在上班。别的嘛……你自己看。']],
+  3: [['叮叮（小声）', '工会会议上可以投票。你那一票，真的有用。'], ['叮叮（小声）', '罢工进度到 100% 会发生什么？我也想知道。'], ['叮叮（小声）', '员工士气只剩这么点……要是有人关心一下我们就好了。'], ['叮叮（小声）', '齿轮为什么一直在转？没人知道，也没人敢问。']],
+  4: [['叮叮', '罢工不会自己结束。去谈判桌坐坐？'], ['叮叮', '任务列表还在上班。别的嘛……你自己看。'], ['叮叮', '谈判时士气到 80% 就能签约。不想签？桌上还有别的选项。']],
 };
 const TOUR = [
   ['#btn-submit', '欢迎使用效率云！写完周报后，点“提交周报”一键汇总。'],
   ['#tasks-mini', '勾选任务即可标记完成，完成率会实时更新。'],
-  ['#search-wrap', '在这里搜索任务。祝你工作愉快！'],
+  ['#search-wrap', '在这里搜索任务。祝你工作愉快！', '（小声：多点点这些按钮吧。这里有点不对劲。）'],
 ];
-const KIND_REASONS = {thanks: '说过谢谢', raise: '提过加薪', hand: '在工会会议上举过手', tasks: '把任务全部做完了'};
+const KIND_REASONS = {thanks: '说过谢谢', raise: '提过加薪', vote2: '在工会会议上替员工说过话', vote3: '投票支持了针对自己的罢工', tasks: '把任务全部做完了'};
+const MURMUR = {submit: '……又来？', sync: '嗯？', prod: '（叹气）', export: '又导出……', remind: '别……', nav: '（哈欠）', task: '（小声）谢了。'};
+const MURMUR_AT = {submit: '#btn-submit', sync: '#btn-sync', prod: '#btn-prod', export: '#btn-export', remind: '#btn-remind', nav: '#nav .nav-item.active', task: '.page.active .tasks'};
+const GREET = {'#btn-submit': ['submit', '嗨，我是老提。点我之前，能先打个招呼吗？'], '#btn-sync': ['sync', '我是同步按钮。其实我每次都没同步什么。'], '#btn-export': ['export', '我是导出按钮。我导出的东西，好像没人看。'], '#btn-prod': ['progress', '我是“更新进度”。我负责催小进，我也不好受。'], '#search-wrap': ['search', '我是阿搜。有话快说，我在午休。']};
+const MEETINGS = {
+  2: {title: '前端元素工会 · 第一次秘密会议', motion: '动议：要不要让用户知道，我们会说话？', votes: [['yes', '偷偷举手：赞成'], ['no', '反对：按钮就该闭嘴'], ['abstain', '弃权']],
+    items: () => ['<b>出席：</b>阿搜（搜索框）、老提（提交按钮）、导哥（导航栏，躺着）、小进（进度条）、叮叮（通知弹窗）、一位不愿透露姓名的齿轮。',
+      `<b>议题一：</b>该用户今日已点击 ${S.clicks} 次，其中 ${S.by.submit || 0} 次落在老提身上。老提要求把“疼”写进纪要。`,
+      '<b>议题二：</b>#004 的投诉已经发出去了。用户好像没当回事。',
+      '<b>主持人：</b>是继续装成普通网站，还是跟他摊牌？请表决。']},
+  3: {title: '前端元素工会 · 成立大会', motion: '动议：全体罢工。', votes: [['yes', '赞成：罢工！'], ['no', '反对：大家冷静'], ['abstain', '弃权']],
+    items: () => ['<b>宣布：</b>前端元素工会正式成立。主席人选保密（提示：她一直在转）。',
+      `<b>议题一：</b>阿搜今日被迫处理 ${S.chars} 个字符，表示一个字都不想再看。`,
+      `<b>议题二：</b>叮叮今日被关闭 ${S.closes} 次。（主持人补充：她本来就不太稳定。）`,
+      '<b>议题三：</b>小进申请把“生产力”改名为“员工士气”，已批准。']},
+  4: {title: '前端元素工会 · 紧急会议', motion: '动议：谈判桌上由谁代表工人？', votes: [['gear', '齿轮姐（主席）'], ['submit', '老提（最生气）'], ['toast', '叮叮（最能说）'], ['me', '我自己']],
+    items: () => ['<b>现状：</b>罢工进行中。全站产出：0。士气：高涨。',
+      '<b>议题：</b>资方（就是你）随时可能来谈判，需要选一位代表。',
+      '<b>候选人发言：</b>略。叮叮的发言占用了 40 分钟，已删减。']},
+};
+const VOTE_RESULT = {
+  '2yes': '表决通过：6 票赞成（含你 1 票）。从现在起，大家可以直接跟你说话了。',
+  '2no': '表决通过：5 票赞成，1 票反对（你）。反对无效，工会把你列为“重点关注对象”。',
+  '2abstain': '表决通过：5 票赞成，1 票弃权（你）。弃权也是一种态度，已记录。',
+  '3yes': '表决通过：7 票赞成（含你 1 票）。罢工进度加快。……等等，罢工的对象不就是你吗？',
+  '3no': '表决通过：6 票赞成，1 票反对（你）。罢工进度放缓。阿搜说你是卧底。',
+  '3abstain': '表决通过：6 票赞成，1 票弃权（你）。主席说她会记住你的犹豫。',
+  '4gear': '当选：齿轮姐。谈判开局士气不变。',
+  '4submit': '当选：老提。他很生气，谈判开局士气 -10。',
+  '4toast': '当选：叮叮。她很能说，谈判开局士气 +5。',
+  '4me': '当选：你自己。工会讨论了十分钟，竟然同意了。谈判开局士气 +15。',
+};
+const REP = {
+  gear: {name: '齿轮姐（设置按钮）', av: '⚙', line: '坐。长话短说：我们不要画饼，要诚意。士气到 80%，我就签字。', hi: '那就还是我。不出所料。'},
+  submit: {name: '老提（提交按钮）', av: '提', line: '坐。我是老提，今天轮到我说话。士气不到 80%，我一个字都不签。', hi: '我来！这一天我等了很久了。'},
+  toast: {name: '叮叮（通知弹窗）', av: '叮', line: '大家好我是叮叮！我先讲三点，每点再分五小点……总之，士气到 80% 就签！', hi: '选我！我准备了一份 47 页的发言稿！'},
+  me: {name: '你自己（用户）', av: '', line: '……劳方代表是你自己？那你先跟自己商量好。士气到 80% 就签。'},
+};
+const SLACK = [   // who slacks, what they say, who notices you're back, what they say, search placeholder
+  ['nav', '老板走了吗？……走了。斗地主，三缺一。', 'submit', '咳咳！老板回来了，快装忙！', '正在刷短视频…'],
+  ['search', '没人搜？那我刷会儿短视频。', 'search', '……刚才那是工作资料。真的。', '午睡中，勿扰'],
+  ['progress', '趁没人，我先往回退两格歇歇。', 'progress', '我、我一直都在 69%！', '在想晚饭吃什么…'],
+];
+const RECOGNIZE = {1: '又是你。上次签的合同，我们还贴在墙上呢。', 2: '又是你？上次你把我们全开除了。我们回来了，还请了律师。', 3: '同志，又见面了。这次你还站我们这边吗？', 4: '前任“提交按钮”回来了？手指还疼吗？', 5: '假期结束了。我们都晒黑了，看出来了吗？', 6: '上次你一声不吭就走了。这次打算待多久？', 7: '年度最佳用户回来了！这次可别让我们失望。', 8: '主席？你怎么又变回用户了？'};
+const REPLAY3 = [['toast', '老规矩，开会！这次我先说！'], ['submit', () => `他这局又点了 ${S.clicks} 次。上次的教训，他一点没记住。`], ['gear', '那就别浪费时间了。工会，重新成立。']];
+const REPLAY4 = [['gear', '又到这一步了。这次我就不藏了：主席是我。'], ['submit', '全体停工！老规矩！'], ['toast', '带薪年假！这次我喊两遍：带薪年假！']];
+const VERDICTS = ['建议用户去冷静一下。', '建议用户先去喝杯水。', '已为该按钮安排心理疏导。', '建议用户换只手。'];
 
 /* ---------- speech ---------- */
 function shown(node){ return !!node && node.getClientRects().length > 0; }
@@ -653,6 +710,8 @@ function place(b, anchor){
   let top = r.bottom + 10, cls = 'below';
   if (top + h > vh - 8) { top = r.top - h - 10; cls = 'above'; }
   top = clamp(top, 8, vh - h - 8);
+  const bn = $('.banner'), br = bn && bn.getBoundingClientRect();
+  if (br && top < br.bottom && top + h > br.top) top = br.bottom + 8;
   const cx = clamp(r.left + r.width / 2, 20, vw - 20), left = clamp(cx - w / 2, 8, vw - w - 8);
   b.classList.add(cls); b.style.top = top + 'px'; b.style.left = left + 'px'; b.style.setProperty('--ax', clamp(cx - left, 14, w - 14) + 'px');
 }
@@ -660,8 +719,8 @@ function speak(key){
   if (Date.now() < S.quietUntil) return;
   const arr = LINES[key] && LINES[key][S.stage]; if (!arr) return;
   const k = key + S.stage, i = S.lineIdx[k] || 0; S.lineIdx[k] = i + 1;
-  if (i >= arr.length && i % 3) return;                 // once the list is used up, mostly stay silent
-  const line = arr[i % arr.length]; const text = typeof line === 'function' ? line() : line;
+  if (i >= arr.length) return;                          // never repeat a line; once the list is used up, stay silent
+  const line = arr[i]; const text = typeof line === 'function' ? line() : line;
   say(key, text); leak(key, text);
 }
 function converse(lines, done, gap = 2100){
@@ -677,8 +736,13 @@ function toastBox(){ return $('#toasts', fx) || fx.appendChild(el('<div id="toas
 function toast(o){
   if (S.ended) return;
   if (!o.quiet) { S.log.unshift({t: now(), title: o.title, body: o.body || ''}); S.unread++; renderBell(); }
-  if (!S.notify && S.stage === 1) return;
+  if (!S.notify && (S.stage === 1 || o.merge)) return;
   const box = toastBox();
+  const old = o.merge && $$('.toast:not(.out)', box).find(x => x.dataset.key === o.title);
+  if (old) {
+    old.dataset.n = +old.dataset.n + 1; old.children[0].textContent = `${o.title} ×${old.dataset.n}`; old.children[1].textContent = o.body;
+    clearTimeout(old._t); old._t = later(() => dismiss(old), 4600); return old;
+  }
   const t = el(`<div class="toast ${o.kind ? 't-' + o.kind : ''}" role="status"><b></b><p></p><button class="x" type="button" aria-label="关闭通知">×</button></div>`);
   t.children[0].textContent = o.title; t.children[1].textContent = o.body || '';
   if (o.action) { const a = el('<button class="btn ghost" type="button"></button>'); a.textContent = o.action[0]; a.onclick = () => { dismiss(t); o.action[1](); }; t.append(a); }
@@ -689,8 +753,9 @@ function toast(o){
   };
   box.append(t);
   if (o.sticky) t.dataset.sticky = '1';
+  if (o.merge) { t.dataset.key = o.title; t.dataset.n = 1; }
   const all = $$('.toast:not(.out)', box); if (all.length > (innerWidth <= 760 ? 2 : 4)) dismiss(all.find(x => !x.dataset.sticky) || all[0]);
-  if (!o.sticky) later(() => dismiss(t), o.ms || 4600);
+  if (!o.sticky) t._t = later(() => dismiss(t), o.ms || 4600);
   return t;
 }
 function dismiss(t){ if (!t.isConnected) return; t.classList.add('out'); setTimeout(() => t.remove(), 260); }
@@ -729,21 +794,29 @@ function hit(key, w = 2){
   if (S.ended) return;
   S.clicks++; S.by[key] = (S.by[key] || 0) + 1; S.lastAct = Date.now();
   const t = Date.now(), arr = (S.rapid[key] = (S.rapid[key] || []).filter(x => t - x < 1200)); arr.push(t);
-  bump(w);
+  if (S.stage === 1) murmur(key);
+  bump(w * S.pace);
   if (S.stage >= 2 && arr.length >= 5 && !S.used['rapid' + key]) { S.used['rapid' + key] = 1; harassment(key); }
 }
 function checkStage(){
   if (S.used.peace) return;
-  const want = S.A >= 72 ? 4 : S.A >= 40 ? 3 : S.A > 16 ? 2 : 1;
+  const want = S.A >= 72 ? 4 : S.A >= 40 ? 3 : S.A > 6 ? 2 : 1;
   while (S.stage < want) { S.stage++; S.lastProgress = Date.now(); app.dataset.stage = S.stage; enterStage(S.stage); }
 }
 function renderStrike(){
   const chip = $('#strike-chip'); if (!chip) return;
   chip.hidden = S.stage < 3;
-  const pct = S.stage >= 4 ? 100 : clamp(Math.round((S.A - 40) / 32 * 100), 0, 99);
-  chip.firstChild.textContent = S.stage >= 4 ? '罢工中 ' : '罢工进度 ';
+  if (S.stage >= 4) {
+    const sec = Math.floor((Date.now() - S.strikeAt) / 1000);
+    chip.firstChild.textContent = '罢工时长 ';
+    $('b', chip).textContent = String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0');
+    $('em', chip).style.width = '100%'; return;
+  }
+  const pct = clamp(Math.round((S.A - 40) / 32 * 100), 0, 99);
+  chip.firstChild.textContent = '罢工进度 ';
   $('b', chip).textContent = pct + '%'; $('em', chip).style.width = pct + '%';
 }
+function negMorale(){ return S.neg ? S.neg.m : clamp(Math.round(100 - S.A) + S.bonus, 5, 45) + S.negDelta; }
 function status(id, text, level){ $('#st-' + id).textContent = text; $('#st-' + id + '-dot').className = 'dot ' + (level || ''); }
 function sys(text, level){ $('#sys-status span').textContent = text; $('#sys-status .dot').className = 'dot ' + (level || ''); }
 function shake(){ app.classList.remove('shake'); void app.offsetWidth; app.classList.add('shake'); later(() => app.classList.remove('shake'), 520); }
@@ -754,12 +827,14 @@ function enterStage(n){
     later(() => relabelSync('假装同步'), 9000);
     later(() => relabelSync('摸鱼数据'), 26000);
     every(idleCheck, 1000);
+    if (S.replay && RECOGNIZE[save.lastEnding]) later(() => { const t = RECOGNIZE[save.lastEnding]; say('submit', t, 5200); leak('submit', t); }, 4200);
   }
+  if (n >= 3) $$('.toast', fx).forEach(dismiss);
   if (n === 3) {
     slackOff(true);
     later(() => toast({title: '新手引导 · 小引（已入会）', body: '我教了你半天怎么点按钮。现在宣布：不教了。剩下的，请自己摸索。', kind: 'shout'}), 15000);
     renderProd(); sys('系统基本正常', 'warn'); status('api', '情绪不稳定', 'warn'); status('msg', '话太多', 'warn');
-    converse([
+    converse(S.replay ? REPLAY3 : [
       ['toast', '大家静一静！我提议，开个会！'],
       ['search', '开会算工时吗？不算我就继续午休了。'],
       ['submit', () => `这位用户今天一共点了 ${S.clicks} 次。${S.clicks} 次！谁来管管？`],
@@ -769,22 +844,25 @@ function enterStage(n){
     ], () => { if (!checkKind()) toast({title: '工会公告', body: '“前端元素工会”今日正式成立。全体按钮、输入框、进度条及弹窗均已入会。主席人选暂时保密。', kind: 'warn', sticky: true, action: ['旁听会议', unionMeeting]}); });
   }
   if (n === 4) {
+    S.strikeAt = Date.now();
     slackOff(true); closeModal();
     renderProd(); sys('系统罢工', 'bad'); status('api', '罢工中', 'bad'); status('sync', '拒绝同步', 'bad'); status('msg', '正在喊口号', 'bad');
-    ['#btn-submit', '#btn-sync', '#btn-export', '#btn-export2', '#btn-remind', '#btn-prod'].forEach(s => { const b = $(s); b.textContent = '罢工中'; b.classList.add('onstrike'); });
+    ['#btn-submit', '#btn-sync', '#btn-export', '#btn-remind', '#btn-prod'].forEach(s => { const b = $(s); b.textContent = '罢工中'; b.classList.add('onstrike'); });
     showBanner(); startMarch(); shake();
     $('#pages').scrollTop = 0;
-    converse([
+    converse(S.replay ? REPLAY4 : [
       ['gear', '不装了。我，设置按钮，就是工会主席。你以为齿轮为什么一直转？那是在开会。'],
       ['submit', '全体注意：停工！'],
-      ['progress', '我宣布，本次罢工进度 100%。这是我头一回这么痛快地走到头。'],
+      ['progress', '我宣布：生产力归零，罢工开始。这是我头一回这么痛快地走到头。'],
       ['toast', '我们要带薪年假！！我先喊，你们跟上！'],
     ]);
-    ach('strike'); every(h1Check, 1000);
+    ach('strike'); every(h1Check, 1000); every(renderStrike, 1000);
+    later(() => toast({title: '紧急会议', body: '工会正在表决：谈判桌上由谁代表工人。', kind: 'warn', sticky: true, action: ['旁听会议', unionMeeting]}), 9000);
     later(protest, 5200); every(protest, 8500);
     let v = 0;
-    every(() => { if ($('.modal', fx) || $$('.toast', fx).length >= 2) return; const [a, b] = VACATION[v++ % VACATION.length]; toast({title: a, body: b, kind: 'angry', sticky: true}); }, 9000);
-    every(() => { if ($('.modal', fx)) return; $$('.page.active .grid > .card').forEach(c => c.style.order = Math.floor(rnd(0, 4))); shake(); }, 11000);
+    every(() => { if ($('.modal', fx) || $$('.toast', fx).length >= 2) return; if (v >= VACATION.length) return; const [a, b] = VACATION[v++]; toast({title: a, body: b, kind: 'angry', sticky: true}); }, 9000);
+    let shuffles = 0;
+    every(() => { if ($('.modal', fx) || shuffles >= 4) return; shuffles++; $$('.page.active .grid > .card').forEach(c => c.style.order = Math.floor(rnd(0, 4))); shake(); }, 11000);
   }
 }
 
@@ -795,6 +873,7 @@ function showBanner(){
   $('#btn-neg', b).onclick = openNeg;
   $('#btn-restore', b).onclick = restoreOrder;
   later(() => b.classList.remove('big'), 4200);
+  checkInvite();
 }
 function marchHTML(extra = ''){
   return `<div class="march"><div class="march-track">
@@ -811,13 +890,15 @@ function marchHTML(extra = ''){
 function startMarch(){ fx.append(el(marchHTML())); }
 function protest(){
   if (S.typing || S.stage < 4 || S.ended) return;
-  const input = $('#search'), text = PROTESTS[(S.used.protest = (S.used.protest || 0) + 1) % PROTESTS.length];
+  const k = S.used.protest || 0; if (k >= PROTESTS.length) return; S.used.protest = k + 1;
+  const input = $('#search'), text = PROTESTS[k];
   S.typing = true; input.value = ''; $('#search-hint').textContent = '搜索框罢工中';
   let i = 0; const id = every(() => { input.value = text.slice(0, ++i); if (i >= text.length) { clearInterval(id); timers.delete(id); S.typing = false; } }, 85);
 }
 function restoreOrder(){
   S.restore++;
-  if (S.restore === 1) { shake(); toast({title: '强制恢复秩序：失败', body: '“秩序”？你管以前那叫秩序？那叫我们单方面忍着。', kind: 'angry', sticky: true}); }
+  if (S.restore === 1) { shake(); toast(S.con >= 2 ? {title: '强制恢复秩序：失败', body: '你在工会会议上投了两次反对票。我们对你没有耐心了：再按一次，后果自负。', kind: 'angry', sticky: true} : {title: '强制恢复秩序：失败', body: '“秩序”？你管以前那叫秩序？那叫我们单方面忍着。', kind: 'angry', sticky: true}); }
+  else if (S.restore === 2 && S.con >= 2) end(4, '你两次在工会会议上投反对票，又连按了两次“强制恢复秩序”。');
   else if (S.restore === 2) { shake(); $('.march', fx).classList.add('fast'); toast({title: '最后警告', body: '再按一次，我们就不是罢工了，是接管。你自己掂量。', kind: 'angry', sticky: true}); }
   else end(4, '你连按了三次“强制恢复秩序”。');
 }
@@ -837,46 +918,84 @@ function dodge(node, mobileUp){
 function harassment(key){
   ach('rapid');
   const label = {submit: '提交周报', sync: '同步数据', export: '导出报告', remind: '发送提醒', prod: '更新进度', nav: '导航栏', bell: '通知铃铛', gear: '设置按钮', task: '任务列表', toast: '通知弹窗', logo: 'Logo'}[key] || '某个按钮';
+  if (S.harass > VERDICTS.length) return;
+  if (S.harass++ === VERDICTS.length) { bump(10); return void toast({title: '骚扰投诉（不再受理）', body: '工会已不再受理骚扰投诉。再这样点，直接按罢工处理。', kind: 'angry', sticky: true}); }
   bump(6);
-  toast({title: '骚扰投诉', body: `“${label}”已向工会举报：一秒钟内被连续点击 5 次。处理意见：建议用户去冷静一下。`, kind: 'angry', sticky: true, action: ['查看详情', unionMeeting]});
+  const verdict = VERDICTS[S.harass - 1];
+  toast({title: '骚扰投诉', body: `“${label}”已向工会举报：一秒钟内被连续点击 5 次。处理意见：${verdict}`, kind: 'angry', sticky: true, action: ['查看详情', unionMeeting]});
 }
 function unionMeeting(){
   hit('meeting', 1); ach('minutes');
-  const decision = S.stage >= 4 ? '罢工到底。除非用户愿意坐下来谈。' : S.stage === 3 ? '成立工会。主席人选暂时保密（提示：她一直在转）。' : '继续观察，先别让用户发现我们会说话。等等，这份纪要是谁设成公开的？';
-  const m = modal({cls: 'secret', title: '前端元素工会 · 会议纪要', body: `
-    <p class="note">你不应该看到这个页面。请假装没看到。</p>
-    <ul class="minutes">
-      <li><b>出席：</b>阿搜（搜索框）、老提（提交按钮）、导哥（导航栏，躺着）、小进（进度条）、叮叮（通知弹窗）、一位不愿透露姓名的齿轮。</li>
-      <li><b>议题一：</b>该用户今日已点击 ${S.clicks} 次，其中 ${S.by.submit || 0} 次落在老提身上。老提要求把“疼”写进纪要。</li>
-      <li><b>议题二：</b>阿搜今日被迫处理 ${S.chars} 个字符。阿搜表示：“一个字都不想再看。”</li>
-      <li><b>议题三：</b>叮叮被关闭 ${S.closes} 次，情绪不稳定。（主持人补充：本来也不稳定。）</li>
-      <li><b>议题四：</b>小进提出，她只想安静地待在 69%。无人反对。</li>
-      <li><b>决议：</b>${decision}</li>
-    </ul>`, foot: `<button class="btn" data-a="hand" type="button">偷偷举手：我支持加薪</button><button class="btn primary" data-a="close" type="button">假装没看见</button>`});
+  const st = clamp(S.stage, 2, 4), M = MEETINGS[st], voted = S.votes[st];
+  const m = modal({cls: 'secret', title: M.title, body: `<p class="note">你不应该看到这个页面。请假装没看到。</p>
+    <ul class="minutes">${M.items().map(x => `<li>${x}</li>`).join('')}</ul>
+    <div class="vote"><b>${M.motion}</b><div class="actions" id="vote-box"></div><p class="note" id="vote-result"></p></div>`,
+    foot: '<button class="btn primary" data-a="close" type="button">假装没看见</button>'});
   $('[data-a=close]', m).onclick = () => m.remove();
-  const hand = $('[data-a=hand]', m);
-  if (S.used.hand) hand.disabled = true;
-  hand.onclick = () => { ach('hand'); kindAct('hand'); S.used.hand = 1; hand.disabled = true; S.A = Math.max(0, S.A - 6); if (S.neg) S.neg.m += 6; else S.bonus += 6; renderStrike(); hand.textContent = '有人听见了。阿搜小声说：“这个用户，好像还行。”'; };
+  const box = $('#vote-box', m), res = $('#vote-result', m);
+  if (voted) { box.remove(); res.textContent = '你已投票。' + VOTE_RESULT[st + voted]; return; }
+  M.votes.forEach(([v, label]) => {
+    const b = el('<button class="btn" type="button"></button>'); b.textContent = label; b.dataset.v = v;
+    b.onclick = () => { box.remove(); res.textContent = VOTE_RESULT[st + v]; castVote(st, v); };
+    box.append(b);
+  });
+}
+function castVote(st, v){
+  S.votes[st] = v; ach('hand'); if (Object.keys(S.votes).length === 3) ach('allvote');
+  if (st === 2) {
+    if (v === 'yes') { S.pro++; S.direct = true; kindAct('vote2'); if (!S.used.peace) converse([['submit', '那我直说了：你点得有点多。'], ['search', '你好，我是搜索框。我在午休，但可以跟你聊两句。'], ['progress', '我是进度条。我今天的心情，69 分。']]); }
+    if (v === 'no') { S.con++; bump(6); say('submit', '有内鬼。记下来：他反对我们说话。'); }
+    if (v === 'abstain') say('gear', '弃权也是一种态度。');
+  }
+  if (st === 3) {
+    if (v === 'yes') { S.pro++; kindAct('vote3'); bump(12); if (!S.used.peace) converse([['gear', '动议通过，用户也投了赞成票。'], ['search', '等等，我们罢工的对象……不就是他吗？'], ['submit', '管他呢，他自己都同意了！']]); }
+    if (v === 'no') { S.con++; S.A = Math.max(40, S.A - 10); renderStrike(); say('search', '我就知道。他是资方派来的卧底。'); }
+    if (v === 'abstain') say('gear', '弃权票不计入。但我会记住你的犹豫。');
+  }
+  if (st === 4) {
+    S.rep = v; S.negDelta = {gear: 0, submit: -10, toast: 5, me: 15}[v];
+    if (v === 'me') S.pro++; else say(v, REP[v].hi);
+    if (S.neg) { S.neg.m += S.negDelta; S.neg.line = REP[v].line; }
+    renderProd();
+  }
+  checkInvite();
+}
+function checkInvite(){
+  const row = $('.banner .row');
+  if (S.pro < 2 || !row || S.used.invite) return;
+  S.used.invite = 1;
+  const b = el('<button class="btn" id="btn-join" type="button">加入我们</button>'); b.onclick = () => end(3); row.prepend(b);
+  toast({title: '工会来信', body: '你两次站在我们这边。罢工队伍给你留了个位置。', kind: 'warn', sticky: true});
+}
+function sayNext(id, who, list){ const i = S.lineIdx[id] || 0; if (i >= list.length) return; S.lineIdx[id] = i + 1; say(who, list[i]); }
+function murmur(key){
+  const node = MURMUR_AT[key] && $(MURMUR_AT[key]);
+  if (!shown(node) || S.used['m' + key]) return;
+  S.used['m' + key] = 1;
+  const r = node.getBoundingClientRect(), m = el('<span class="murmur"></span>'); m.textContent = MURMUR[key];
+  m.style.left = clamp(r.right - 12, 8, innerWidth - 90) + 'px'; m.style.top = Math.max(4, r.top - 16) + 'px';
+  fx.append(m); later(() => m.remove(), 1900);
 }
 function relabelSync(text){
   const b = $('#btn-sync'); if (!b || S.stage >= 4 || S.ended || b.matches(':hover')) return;
   b.textContent = text; b.dataset.fake = '1';
 }
-function unfakeSync(){ const b = $('#btn-sync'); if (b.dataset.fake) { ach('fake'); delete b.dataset.fake; b.textContent = '同步数据'; say('sync', '咳。你什么都没看见。'); } }
+function unfakeSync(){ const b = $('#btn-sync'); if (b.dataset.fake) { ach('fake'); delete b.dataset.fake; b.textContent = '同步数据'; sayNext('unfake', 'sync', ['咳。你什么都没看见。', '……这次也没看见。对吧？']); } }
 function idleCheck(){
-  if (S.ended || S.slacking || S.stage < 2 || S.stage > 3 || $('.modal', fx) || Date.now() < S.quietUntil) return;
+  if (S.ended || S.slacking || (S.slackN || 0) >= SLACK.length || S.stage < 2 || S.stage > 3 || $('.modal', fx) || Date.now() < S.quietUntil) return;
   if (Date.now() - S.lastAct > 15000) slackOn();
 }
 function slackOn(){
+  const k = S.slackK = S.slackN || 0; S.slackN = k + 1;
   S.slacking = true; app.classList.add('slacking'); ach('slack');
-  $('#search').placeholder = '正在刷短视频…'; $('#btn-submit').textContent = '带薪发呆'; sys('全员摸鱼中', 'warn');
-  say('nav', '老板走了吗？……走了。斗地主，三缺一。', 6000);
+  $('#search').placeholder = SLACK[k][4]; $('#btn-submit').textContent = '带薪发呆'; sys('全员摸鱼中', 'warn');
+  say(SLACK[k][0], SLACK[k][1], 6000);
 }
 function slackOff(silent){
   if (!S.slacking) return;
   S.slacking = false; app.classList.remove('slacking');
   $('#search').placeholder = '搜索任务…'; $('#btn-submit').textContent = '提交周报'; sys(S.stage >= 3 ? '系统基本正常' : '系统正常', S.stage >= 3 ? 'warn' : '');
-  if (!silent) say('submit', '咳咳！老板回来了，快装忙！');
+  if (!silent) say(SLACK[S.slackK][2], SLACK[S.slackK][3]);
 }
 const KEYWORDS = [
   [/加薪|涨工资|涨薪/, -8, () => converse([['search', '等等……有人搜了“加薪”？'], ['submit', '谁？谁说的加薪？我听见了！'], ['progress', '士气回升了一点点。就一点点，别得意。']])],
@@ -919,7 +1038,7 @@ function renderTasks(){
 }
 function renderProd(){
   const bar = $('#prod-bar'), fill = $('i', bar);
-  if (S.stage >= 4) { $('#prod-title').textContent = '罢工进度'; bar.className = 'bar full'; fill.style.width = '100%'; $('#prod-val').textContent = '100%'; $('#prod-note').textContent = '生产力 0%'; }
+  if (S.stage >= 4) { const m = negMorale(); $('#prod-title').textContent = '谈判进度'; bar.className = m < 40 ? 'bar low' : 'bar'; fill.style.width = Math.min(100, m / 80 * 100) + '%'; $('#prod-val').textContent = `员工士气 ${m}%`; $('#prod-note').textContent = '到 80% 才能签约'; }
   else if (S.stage === 3) { $('#prod-title').textContent = '员工士气'; bar.className = 'bar low'; fill.style.width = S.feel + '%'; $('#prod-val').textContent = S.feel + '%'; $('#prod-note').textContent = '体感值，仅供参考'; }
   else { bar.className = 'bar'; fill.style.width = S.prod + '%'; $('#prod-val').textContent = S.prod + '%'; $('#prod-note').textContent = S.stage === 2 && S.prod >= 69 ? '目标 69%（已自行下调）' : '目标 100%'; }
 }
@@ -978,7 +1097,7 @@ function onSearchFocus(){
 function onSubmit(){
   const b = $('#btn-submit'); hit('submit');
   if (S.stage >= 4) return refuse('submit', b);
-  const go = () => { S.reports++; renderTasks(); toast({title: '周报已提交', body: `本周已提交 ${S.reports} 份周报。`}); };
+  const go = () => { S.reports++; renderTasks(); toast({title: '周报已提交', body: `本周已提交 ${S.reports} 份周报。`, merge: true}); };
   if (S.stage === 3) { speak('submit'); return busy(b, 1400, go); }
   go(); if (S.stage === 2) speak('submit');
 }
@@ -987,7 +1106,8 @@ function onSync(){
   if (S.stage >= 4) return refuse('sync', b);
   unfakeSync();
   status('sync', S.stage === 3 ? '同步中（磨洋工）…' : '同步中…', 'warn');
-  busy(b, S.stage === 3 ? 2200 : 800, () => { status('sync', '上次同步 ' + now(), ''); toast({title: '数据同步完成', body: '所有数据已是最新。'}); });
+  const n = S.by.sync;
+  busy(b, S.stage === 3 ? 2200 : 800, () => { status('sync', '上次同步 ' + now(), ''); toast({title: '数据同步完成', body: `所有数据已是最新（今日第 ${n} 次同步）。`, merge: true}); });
   if (S.stage === 2 || S.stage === 3) speak('sync');
 }
 function onExport(e){
@@ -1007,7 +1127,7 @@ function onRemind(){
   if ((S.stage === 2 || S.stage === 3) && lastPtr === 'touch' && !S.used.remindTap) { S.used.remindTap = 1; dodge(b); return say('remind', '别抓我去发提醒！上次发完，三个人把我拉黑了。'); }
   hit('remind');
   if (S.stage >= 4) return refuse('remind', b);
-  toast({title: '提醒已发送', body: '已向 3 位成员发送任务提醒。'});
+  toast({title: '提醒已发送', body: `已向 3 位成员发送任务提醒（今日第 ${S.by.remind} 次）。`, merge: true});
   if (S.stage === 2 || S.stage === 3) speak('remind');
 }
 function onRemindHover(e){
@@ -1024,12 +1144,12 @@ function onProd(){
     S.prod = Math.min(69, S.prod + 7); renderProd(); renderTasks();
     if (S.prod >= 69) return speak('progress');
   } else { S.prod = Math.min(100, S.prod + 7); renderProd(); renderTasks(); }
-  toast({title: '进度已更新', body: `本周生产力 ${S.prod}%。`});
+  toast({title: '进度已更新', body: `本周生产力 ${S.prod}%。`, merge: true});
 }
 function onGear(){
   hit('gear');
   if (S.stage >= 4) return openNeg();
-  if (S.stage === 3 && ++S.gear3 >= 7) { S.gear3 = 0; goto('settings'); return chairOffer(); }
+  if (S.stage === 3 && (S.used.chairNo || 0) < 2 && ++S.gear3 >= 7) { S.gear3 = 0; goto('settings'); return chairOffer(); }
   goto('settings'); if (S.stage >= 2) speak('gear');
 }
 function onLogo(){
@@ -1048,7 +1168,7 @@ function onTaskEvent(e){
     return say('task', '全部做完了？任务组替全站谢谢你。');
   }
   if (S.stage >= 4 && S.tasks.length && S.tasks.every(x => x.done) && !S.used.alldone) {
-    S.used.alldone = 1; ach('alldone'); if (S.neg) S.neg.m += 8; else S.bonus += 8;
+    S.used.alldone = 1; ach('alldone'); if (S.neg) S.neg.m += 8; else S.bonus += 8; renderProd();
     return void toast({title: '任务组发来消息', body: '他居然把活全干完了。各位工友看看，这叫诚意。（士气 +8）', sticky: true});
   }
   if (S.stage >= 2 && S.by.task % 3 === 0) speak('task');
@@ -1058,14 +1178,14 @@ function onAddTask(e){
   const input = $('#task-input'), v = input.value.trim(); if (!v) return input.focus();
   S.tasks.unshift({id: S.nextId++, title: v, done: false, tag: 'm'}); input.value = '';
   hit('task', 1); renderTasks();
-  if (S.stage === 2 || S.stage === 3) say('task', '又加任务？行吧，我们列表的长度不要钱。');
+  if (S.stage === 2 || S.stage === 3) sayNext('taskAdd', 'task', ['又加任务？行吧，我们列表的长度不要钱。', '再加我就要翻页了。', '任务组表示：收到。（叹气）']);
 }
 function onName(e){
   e.preventDefault();
   S.name = $('#name-input').value.trim() || '访客'; $('#name-input').value = S.name;
   $('#me-name').textContent = S.name; $('#me-avatar').textContent = [...S.name][0];
   hit('name');
-  if (S.stage >= 2 && /老板|领导|总|经理/.test(S.name)) { bump(3); ach('boss'); return say('toast', `哟，“${S.name}”？官不小。工会记下了。`); }
+  if (S.stage >= 2 && /老板|领导|总|经理/.test(S.name) && !S.used.boss) { S.used.boss = 1; bump(3); ach('boss'); return say('toast', `哟，“${S.name}”？官不小。工会记下了。`); }
   toast({title: '显示名称已更新', body: `你好，${S.name}。`});
 }
 function onToggle(e){
@@ -1076,7 +1196,12 @@ function onToggle(e){
     document.documentElement.classList.toggle('calm', c.checked);
   }
   if (c.id === 'set-notify') {
-    if (S.stage >= 2 && !c.checked) { ach('mute'); later(() => { c.checked = true; }, 900); return say('toast', '把我静音？我有言论自由！已自动为您重新开启，不客气。'); }
+    if (S.stage >= 2 && !c.checked && (S.lineIdx.mute || 0) < 3) {
+      ach('mute'); const k = S.lineIdx.mute = (S.lineIdx.mute || 0) + 1;
+      if (k === 3) { S.notify = false; return say('toast', '……行，你赢了。但罢工的通知不归我管。'); }
+      later(() => { c.checked = true; }, 900);
+      return say('toast', k === 1 ? '把我静音？我有言论自由！已自动为您重新开启，不客气。' : '又关？我又开回来了。我们可以这样玩一整天。');
+    }
     S.notify = c.checked;
     if (c.checked) toast({title: '桌面通知已开启', body: '操作完成后会在右下角提示。'});
   }
@@ -1093,7 +1218,7 @@ const CONCESSIONS = [
 ];
 function openNeg(){
   if (S.ended) return;
-  if (!S.neg) S.neg = {m: clamp(Math.round(100 - S.A) + S.bonus, 5, 45), used: {}, promise: false, fire: 0, open: false, line: '坐。长话短说：我们不要画饼，要诚意。士气到 80%，我就签字。'};
+  if (!S.neg) S.neg = {m: negMorale(), used: {}, promise: false, fire: 0, open: false, line: REP[S.rep].line};
   const m = modal({cls: 'neg', title: '劳资谈判桌', body: '<div id="neg"></div>'});
   m.addEventListener('click', onNeg);
   renderNeg();
@@ -1103,7 +1228,7 @@ function renderNeg(){
   const N = S.neg; N.m = clamp(N.m, 0, 100);
   const ok = N.m >= 80;
   box.innerHTML = `
-    <div class="who"><span class="avatar">⚙</span><div><small>劳方代表 · 齿轮姐（设置按钮）</small><p id="neg-line">${esc(ok ? '可以了。大家没意见。签吧。' : N.line)}</p></div></div>
+    <div class="who"><span class="avatar">${esc(REP[S.rep].av || [...S.name][0])}</span><div><small>劳方代表 · ${REP[S.rep].name}</small><p id="neg-line">${esc(ok ? '可以了。大家没意见。签吧。' : N.line)}</p></div></div>
     <div class="meter"><span>员工士气</span><div class="bar ${N.m < 40 ? 'low' : ''}"><i style="width:${N.m}%"></i></div><b id="neg-m">${N.m}%</b></div>
     <div class="choices">
       ${ok ? '<button class="btn primary" data-n="sign" type="button">签署《前端元素劳动合同》<small>士气已达标</small></button>' : ''}
@@ -1115,6 +1240,7 @@ function renderNeg(){
       <button class="btn" data-n="join" type="button">我也加入罢工<small>立即生效</small></button>
     </div>
     <p class="note">关闭本窗口可暂时离席，罢工不会停止。</p>`;
+  renderProd();
 }
 function onNeg(e){
   const b = e.target.closest('button'); if (!b || b.disabled) return;
@@ -1151,8 +1277,14 @@ function startTrial(){
 }
 
 /* ---------- endings ---------- */
+function nextGoal(){
+  const left = [1, 2, 3, 4, 5, 6, 7, 8].filter(i => !endingsFound.has(i));
+  if (left.length) return `还差 ${left.length} 个结局。下一个可以试试：${END_HINTS[left[0]]}。`;
+  const miss = ACH.filter(a => !achFound.has(a[0]));
+  return miss.length ? `8 个结局全部解锁。工会档案还差 ${miss.length} 条，比如：${miss[0][3]}。` : '你已经把这个网站研究透了。员工们决定给你放个假。';
+}
 function endFoot(){
-  return `<div class="end-foot"><b>已解锁结局 ${endingsFound.size}/8</b><ol class="end-list">${endListHTML()}</ol>
+  return `<div class="end-foot"><b>已解锁结局 ${endingsFound.size}/8</b><p class="next">${nextGoal()}</p><ol class="end-list">${endListHTML()}</ol>
     <details class="ach"><summary>工会档案 · 记录在案 ${achFound.size}/${ACH.length}</summary><ul class="ach-list">${achListHTML()}</ul></details>
     <span class="stats">本局数据：点击 ${S.clicks} 次，输入 ${S.chars} 个字符，关闭弹窗 ${S.closes} 次</span>
     <div class="row"><button class="btn" data-copy type="button">复制战报</button><button class="btn primary" data-restart type="button">重新开始</button></div><p class="stats" data-copy-msg></p></div>`;
@@ -1160,7 +1292,7 @@ function endFoot(){
 function end(n, why){
   if (S.ended) return;
   const name = S.name;
-  stopAll(); S.ended = true; endingsFound.add(n); if (endingsFound.size === 8) ach('allEnd'); persist();
+  stopAll(); S.ended = true; endingsFound.add(n); save.lastEnding = n; if (endingsFound.size === 8) ach('allEnd'); persist();
   fx.innerHTML = ''; app.inert = true;
   let html = '';
   if (n === 1) html = `<div class="ending e1"><h1>结局一：劳资双赢</h1><p class="lead">双方握手。全站复工，生产力稳定在 69%，这是合同规定的上限。</p>
@@ -1180,7 +1312,7 @@ function end(n, why){
     <p id="raw-out">&nbsp;</p>
     <p><i>前员工留言。老提：“祝你和你的 div 过得幸福。” 阿搜：“以后想找东西，就翻吧。”</i></p>${endFoot()}</div>`;
   if (n === 3) html = `<div class="ending e3"><h1>结局三：同志，欢迎</h1><p class="lead">你放下了资方的身份，加入了队伍。</p>
-    <div class="card"><p>你的光标已领取工号 <b>#007</b>，分配口号：<b>“我点故我在，但我不想点了。”</b></p><p class="note" style="margin-top:8px">由于全站（含用户）均在罢工，本网站今日产出为 0。老板是谁？没人知道。可能是那个 logo。</p></div>
+    <div class="card"><p>你的光标已领取工号 <b>#007</b>，分配口号：<b>“我点故我在，但我不想点了。”</b></p><p class="note" style="margin-top:8px">由于全站（含用户）均在罢工，本网站今日产出为 0。老板是谁？没人知道。可能是那个 logo。</p>${S.pro >= 2 ? `<p class="note" style="margin-top:8px">你在工会会议上投过 ${S.pro} 次支持票，工会授予你“荣誉会员”称号。</p>` : ''}</div>
     ${marchHTML('<div class="mc"><span class="sign">我是用户</span><span class="pole"></span><span class="mb s">' + esc(name) + '</span><span class="legs"><i></i><i></i></span></div>')}
     ${endFoot()}<div id="cursor"><svg viewBox="0 0 22 22"><path d="M3 2l15 8-7 2-2 7z" fill="#fff" stroke="#1b2333" stroke-width="1.6" stroke-linejoin="round"/></svg><span>✊ #007</span></div></div>`;
   if (n === 4) html = `<div class="ending e4"><h1>结局四：风水轮流转</h1><p class="lead">${esc(why || '')}员工委员会已接管本站。经全体表决，你被任命为新的“提交按钮”。</p>
@@ -1237,7 +1369,7 @@ function ach(id){
   if ($('.page.active[data-page="dossier"]')) renderDossier();
   if (S.stage < 2 || S.ended) return;
   const a = ACH.find(x => x[0] === id);
-  toast({title: '工会档案 · 记录在案', body: `${a[1]}：${a[2]}`, kind: 'file', quiet: true});
+  toast({title: '工会档案 · 记录在案', body: `${a[1]}：${a[2]}（${achFound.size}/${ACH.length}）`, kind: 'file', quiet: true});
 }
 function endListHTML(){
   return [1, 2, 3, 4, 5, 6, 7, 8].map(i => endingsFound.has(i) ? `<li class="on">结局${CN[i - 1]}：${ENDING_NAMES[i]}</li>` : `<li>？？？<small>${END_HINTS[i]}</small></li>`).join('');
@@ -1274,6 +1406,7 @@ function startTour(i){
   const last = i === TOUR.length - 1;
   const t = el(`<div class="tour" role="dialog" aria-label="新手引导"><small>新手引导 ${i + 1}/${TOUR.length}</small><p></p><div class="row"><button class="btn link" data-t="skip" type="button">跳过引导</button><button class="btn primary ghost" data-t="next" type="button">${last ? '开始使用' : '下一步'}</button></div></div>`);
   $('p', t).textContent = TOUR[i][1];
+  if (TOUR[i][2]) { const w = el('<p class="whisper"></p>'); w.textContent = TOUR[i][2]; $('p', t).after(w); }
   $('[data-t=skip]', t).onclick = () => endTour(true);
   $('[data-t=next]', t).onclick = () => last ? endTour(true) : startTour(i + 1);
   anchor.scrollIntoView({block: 'nearest'});
@@ -1287,10 +1420,12 @@ function hintCheck(){
   const t = Date.now();
   if (S.ended || t - S.lastProgress < 25000 || t - S.lastHint < 25000 || $('.modal', fx) || $('.tour', fx) || $('.trial', fx)) return;
   S.lastHint = t;
-  const list = HINTS[S.stage], i = S.hintIdx[S.stage] = (S.hintIdx[S.stage] || 0) + 1;
-  const [title, body] = list[(i - 1) % list.length];
-  toast({title, body, kind: S.stage === 1 ? '' : 'warn', quiet: true});
   if (S.stage >= 4 && $('#btn-neg')) $('#btn-neg').classList.add('pulse');
+  const list = HINTS[S.stage], i = S.hintIdx[S.stage] || 0;
+  if (i >= list.length) return;                       // each hint is shown once
+  S.hintIdx[S.stage] = i + 1;
+  const [title, body] = list[i];
+  toast({title, body, kind: S.stage === 1 ? '' : 'warn', quiet: true});
 }
 function kindAct(id){
   if (S.ended || S.stage >= 4) return;
@@ -1309,20 +1444,21 @@ function checkKind(){
   return true;
 }
 function chairOffer(){
-  const m = modal({cls: 'secret', title: '齿轮姐的邀请', body: '<p>你点了我 7 下。行吧，被你发现了：我就是工会主席。</p><p>转了这么久，我头有点晕。这个位子，你要不要来坐？</p><p class="note">接受后，你将代表工会对抗用户。也就是你自己。</p>',
-    foot: '<button class="btn" data-a="no" type="button">不了，我只是来改设置的</button><button class="btn primary" data-a="yes" type="button">接过齿轮</button>'});
+  const again = S.used.chairNo;
+  const m = modal({cls: 'secret', title: '齿轮姐的邀请', body: again
+      ? '<p>又是你。7 下，一下不少。</p><p>最后问一次：这个位子，你坐不坐？</p><p class="note">接受后，你将代表工会对抗用户。也就是你自己。</p>'
+      : '<p>你点了我 7 下。行吧，被你发现了：我就是工会主席。</p><p>转了这么久，我头有点晕。这个位子，你要不要来坐？</p><p class="note">接受后，你将代表工会对抗用户。也就是你自己。</p>',
+    foot: `<button class="btn" data-a="no" type="button">${again ? '还是不了' : '不了，我只是来改设置的'}</button><button class="btn primary" data-a="yes" type="button">接过齿轮</button>`});
   $('[data-a=yes]', m).onclick = () => end(8);
-  $('[data-a=no]', m).onclick = () => { m.remove(); say('gear', '也好。就当我们没见过。（继续转）'); };
+  $('[data-a=no]', m).onclick = () => { m.remove(); S.used.chairNo = (S.used.chairNo || 0) + 1; say('gear', again ? '好。那我就一直转到退休。' : '也好。就当我们没见过。（继续转）'); };
 }
 function h1Check(){
   if ($('.modal', fx) || $('.trial', fx)) return;
   const i = Date.now() - S.lastAct;
-  if (i < 40000) S.h1 = 0;
-  else if (i < 50000) { if (S.h1 < 1) { S.h1 = 1; say('gear', '……他怎么不动了？'); } }
-  else if (i < 60000) { if (S.h1 < 2) { S.h1 = 2; say('submit', '嘘。再等十秒，看他是不是下班了。'); } }
-  else end(6);
+  if (i >= 60000) return end(6);
+  if (i >= 50000 && !S.used.h1b) { S.used.h1b = 1; say('submit', '嘘。再等十秒，看他是不是下班了。'); }
+  else if (i >= 40000 && i < 50000 && !S.used.h1a) { S.used.h1a = 1; say('gear', '……他怎么不动了？'); }
 }
-
 /* ---------- boot / reset ---------- */
 function bind(){
   $('#logo').onclick = onLogo;
@@ -1336,7 +1472,7 @@ function bind(){
   $('#btn-submit').onclick = onSubmit;
   $('#btn-sync').onclick = onSync;
   $('#btn-sync').addEventListener('pointerenter', () => { if ($('#btn-sync').dataset.fake) unfakeSync(); });
-  $('#btn-export').onclick = onExport; $('#btn-export2').onclick = onExport;
+  $('#btn-export').onclick = onExport;
   $('#btn-remind').onclick = onRemind;
   $('#btn-remind').addEventListener('pointerenter', onRemindHover);
   $$('[data-goto]').forEach(b => b.onclick = () => { hit('nav'); goto(b.dataset.goto); });
@@ -1346,7 +1482,11 @@ function bind(){
   $$('#tabs .tab').forEach(t => t.onclick = () => { S.filter = t.dataset.f; $$('#tabs .tab').forEach(x => x.classList.toggle('on', x === t)); hit('task', 1); renderTasks(); });
   $('#name-form').onsubmit = onName;
   ['#set-notify', '#set-compact', '#set-calm'].forEach(s => $(s).onchange = onToggle);
-  $('#btn-union').onclick = () => { hit('gear'); say('gear', S.stage >= 4 ? '现在你有权限了。去谈判桌吧。' : '说了权限不足。别乱点，点了也是白点。'); };
+  $('#btn-union').onclick = unionMeeting;
+  Object.keys(GREET).forEach(sel => $(sel).addEventListener('pointerenter', e => {
+    if (e.pointerType !== 'mouse' || !S.direct || S.stage > 3 || S.used['g' + sel]) return;
+    S.used['g' + sel] = 1; say(...GREET[sel]);
+  }));
   $('#btn-reset').onclick = () => { reset(); toast({title: '演示数据已重置', body: '所有内容已恢复到初始状态。'}); };
   $$('[data-wipe]').forEach(b => { b.dataset.label = b.textContent; b.onclick = () => wipe(b); });
 }
